@@ -10,7 +10,7 @@ type Test struct {
 	WebsiteName string
 	ContactID   int
 	Status      string
-	Uptime      int
+	Uptime      float64
 }
 
 // Tests is a client that implements the `Tests` API.
