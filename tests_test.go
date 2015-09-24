@@ -11,12 +11,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type fakeApiClient struct {
+type fakeAPIClient struct {
 	requestedPath string
 	fixture       string
 }
 
-func (c *fakeApiClient) get(path string) (*http.Response, error) {
+func (c *fakeAPIClient) get(path string) (*http.Response, error) {
 	c.requestedPath = path
 	p := filepath.Join("fixtures", c.fixture)
 	f, err := os.Open(p)
@@ -35,7 +35,7 @@ func TestTests_All(t *testing.T) {
 	assert := assert.New(t)
 	require := require.New(t)
 
-	c := &fakeApiClient{
+	c := &fakeAPIClient{
 		fixture: "tests_ok.json",
 	}
 	tt := newTests(c)

@@ -16,12 +16,14 @@ type apiClient interface {
 	get(string) (*http.Response, error)
 }
 
+// Client is the http client that wraps the remote API.
 type Client struct {
 	c        httpClient
 	username string
 	apiKey   string
 }
 
+// New returns a new Client
 func New(username string, apiKey string) *Client {
 	c := &http.Client{}
 	return &Client{
@@ -57,6 +59,7 @@ func (c *Client) get(path string) (*http.Response, error) {
 	return c.doRequest(r)
 }
 
+// Tests returns a client that implements the `Tests` API.
 func (c *Client) Tests() Tests {
 	return newTests(c)
 }

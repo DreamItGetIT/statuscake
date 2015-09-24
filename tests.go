@@ -2,6 +2,7 @@ package statuscake
 
 import "encoding/json"
 
+// Test represents a statuscake Test
 type Test struct {
 	TestID      int
 	Paused      bool
@@ -12,6 +13,7 @@ type Test struct {
 	Uptime      int
 }
 
+// Tests is a client that implements the `Tests` API.
 type Tests interface {
 	All() ([]*Test, error)
 }
