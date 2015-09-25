@@ -14,6 +14,17 @@ func init() {
 	log = logpkg.New(os.Stderr, "", 0)
 }
 
+func colouredStatus(s string) string {
+	switch s {
+	case "Up":
+		return fmt.Sprintf("\033[0;32m%s\033[0m", s)
+	case "Down":
+		return fmt.Sprintf("\033[0;31m%s\033[0m", s)
+	default:
+		return s
+	}
+}
+
 func getEnv(name string) string {
 	v := os.Getenv(name)
 	if v == "" {
@@ -31,7 +42,20 @@ func listTests(c *statuscake.Client) error {
 	}
 
 	for _, t := range tests {
-		fmt.Printf("* %d %s: %s\n", t.TestID, t.WebsiteName, t.Status)
+		var paused string
+		if t.Paused {
+			paused = "yes"
+		} else {
+			paused = "no"
+		}
+
+		fmt.Printf("* %d: %s\n", t.TestID, colouredStatus(t.Status))
+		fmt.Printf("  WebsiteName: %s\n", t.WebsiteName)
+		fmt.Printf("  TestType: %s\n", t.TestType)
+		fmt.Printf("  Paused: %s\n", paused)
+		fmt.Printf("  ContactGroup: %d\n", t.ContactGroup)
+		fmt.Printf("  ContactID: %d\n", t.ContactID)
+		fmt.Printf("  Uptime: %f\n", t.Uptime)
 	}
 
 	return nil
