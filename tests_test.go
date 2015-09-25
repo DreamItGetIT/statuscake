@@ -11,24 +11,51 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type fakeAPIClient struct {
-	requestedPath string
-	fixture       string
-}
+func TestTest_Validate(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
 
-func (c *fakeAPIClient) get(path string) (*http.Response, error) {
-	c.requestedPath = path
-	p := filepath.Join("fixtures", c.fixture)
-	f, err := os.Open(p)
-	if err != nil {
-		log.Fatal(err)
+	test := &Test{
+		Timeout:      200,
+		Confirmation: 100,
+		Public:       200,
+		Virus:        200,
+		TestType:     "FTP",
+		RealBrowser:  100,
+		TriggerRate:  100,
+		CheckRate:    100000,
+		WebsiteName:  "",
+		WebsiteURL:   "",
 	}
 
-	resp := &http.Response{
-		Body: f,
-	}
+	err := test.Validate()
+	require.NotNil(err)
 
-	return resp, nil
+	message := err.Error()
+	assert.Contains(message, "WebsiteName is required")
+	assert.Contains(message, "WebsiteURL is required")
+	assert.Contains(message, "Timeout must be 0 or between 6 and 99")
+	assert.Contains(message, "Confirmation must be between 0 and 9")
+	assert.Contains(message, "CheckRate must be between 0 and 23999")
+	assert.Contains(message, "Public must be 0 or 1")
+	assert.Contains(message, "Virus must be 0 or 1")
+	assert.Contains(message, "TestType must be HTTP, TCP, or PING")
+	assert.Contains(message, "RealBrowser must be 0 or 1")
+	assert.Contains(message, "TriggerRate must be between 0 and 59")
+
+	test.Timeout = 10
+	test.Confirmation = 2
+	test.Public = 1
+	test.Virus = 1
+	test.TestType = "HTTP"
+	test.RealBrowser = 1
+	test.TriggerRate = 50
+	test.CheckRate = 10
+	test.WebsiteName = "Foo"
+	test.WebsiteURL = "http://example.com"
+
+	err = test.Validate()
+	assert.Nil(err)
 }
 
 func TestTests_All(t *testing.T) {
@@ -66,4 +93,24 @@ func TestTests_All(t *testing.T) {
 		Uptime:      0,
 	}
 	assert.Equal(expectedTest, tests[1])
+}
+
+type fakeAPIClient struct {
+	requestedPath string
+	fixture       string
+}
+
+func (c *fakeAPIClient) get(path string) (*http.Response, error) {
+	c.requestedPath = path
+	p := filepath.Join("fixtures", c.fixture)
+	f, err := os.Open(p)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	resp := &http.Response{
+		Body: f,
+	}
+
+	return resp, nil
 }
