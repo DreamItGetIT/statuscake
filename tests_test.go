@@ -3,6 +3,7 @@ package statuscake
 import (
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"testing"
@@ -56,6 +57,24 @@ func TestTest_Validate(t *testing.T) {
 
 	err = test.Validate()
 	assert.Nil(err)
+}
+
+func TestTest_ToURLValues(t *testing.T) {
+	assert := assert.New(t)
+
+	test := &Test{
+		TestID:      123,
+		Paused:      true,
+		WebsiteName: "Foo Bar",
+	}
+
+	expected := url.Values{
+		"TestID":      {"123"},
+		"WebsiteName": {"Foo Bar"},
+		"Paused":      {"1"},
+	}
+
+	assert.Equal(expected, test.ToURLValues())
 }
 
 func TestTests_All(t *testing.T) {

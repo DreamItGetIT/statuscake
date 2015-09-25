@@ -1,17 +1,24 @@
 package statuscake
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+	"net/url"
+	"reflect"
+)
+
+const queryStringTag = "querystring"
 
 // Test represents a statuscake Test
 type Test struct {
 	// ThiTestID is an int, use this to get more details about this test. If not provided will insert a new check, else will update
-	TestID int `json:"TestID"`
+	TestID int `json:"TestID" querystring:"TestID"`
 
 	// Sent tfalse To Unpause and true To Pause.
-	Paused bool `json:"Paused"`
+	Paused bool `json:"Paused" querystring:"Paused"`
 
 	// Website name. Tags are stripped out
-	WebsiteName string `json:"WebsiteName"`
+	WebsiteName string `json:"WebsiteName" querystring:"WebsiteName"`
 
 	// Test location, either an IP (for TCP and Ping) or a fully qualified URL for other TestTypes
 	WebsiteURL string `json:"WebsiteURL"`
@@ -136,6 +143,40 @@ func (t *Test) Validate() error {
 	}
 
 	return nil
+}
+
+func (t Test) ToURLValues() url.Values {
+	values := make(url.Values)
+	st := reflect.TypeOf(t)
+	sv := reflect.ValueOf(t)
+	for i := 0; i < st.NumField(); i++ {
+		sf := st.Field(i)
+		tag := sf.Tag.Get(queryStringTag)
+		ft := sf.Type
+		if ft.Name() == "" && ft.Kind() == reflect.Ptr {
+			// Follow pointer.
+			ft = ft.Elem()
+		}
+
+		if tag != "" {
+			v := sv.Field(i)
+			values.Set(tag, valueToQueryStringValue(v))
+		}
+	}
+
+	return values
+}
+
+func valueToQueryStringValue(v reflect.Value) string {
+	if v.Type().Name() == "bool" {
+		if v.Bool() {
+			return "1"
+		} else {
+			return "0"
+		}
+	}
+
+	return fmt.Sprint(v)
 }
 
 // Tests is a client that implements the `Tests` API.

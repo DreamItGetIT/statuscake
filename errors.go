@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// ValidationError is a map where the key is the invalid field and the value is a message describing why the field is invalid.
 type ValidationError map[string]string
 
 func (e ValidationError) Error() string {
