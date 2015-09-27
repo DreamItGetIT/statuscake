@@ -203,6 +203,38 @@ func TestTests_Put_Error(t *testing.T) {
 	assert.Contains(err.Error(), "issue a")
 }
 
+func TestTests_Delete_OK(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := &fakeAPIClient{
+		fixture: "tests_delete_ok.json",
+	}
+	tt := newTests(c)
+
+	err := tt.Delete(1234)
+	require.Nil(err)
+
+	assert.Equal("/Tests/Delete", c.sentRequestPath)
+	assert.Equal("DELETE", c.sentRequestMethod)
+	assert.Equal(url.Values{"TestID": {"1234"}}, c.sentRequestValues)
+	assert.NotNil(c.sentRequestValues)
+}
+
+func TestTests_Delete_Error(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := &fakeAPIClient{
+		fixture: "tests_delete_error.json",
+	}
+	tt := newTests(c)
+
+	err := tt.Delete(1234)
+	require.NotNil(err)
+	assert.Equal("this is an error", err.Error())
+}
+
 type fakeAPIClient struct {
 	sentRequestPath   string
 	sentRequestMethod string
@@ -212,6 +244,10 @@ type fakeAPIClient struct {
 
 func (c *fakeAPIClient) put(path string, v url.Values) (*http.Response, error) {
 	return c.all("PUT", path, v)
+}
+
+func (c *fakeAPIClient) delete(path string, v url.Values) (*http.Response, error) {
+	return c.all("DELETE", path, v)
 }
 
 func (c *fakeAPIClient) get(path string) (*http.Response, error) {

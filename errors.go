@@ -48,7 +48,15 @@ func (e *updateError) Error() string {
 	return strings.Join(messages, ", ")
 }
 
-// ApiError returns the error specified in the API response
-func (e *updateError) ApiError() string {
+// APIError returns the error specified in the API response
+func (e *updateError) APIError() string {
 	return e.Error()
+}
+
+type deleteError struct {
+	Message string
+}
+
+func (e *deleteError) Error() string {
+	return e.Message
 }

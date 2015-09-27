@@ -16,6 +16,11 @@ type updateResponse struct {
 	InsertID int               `json:"InsertID"`
 }
 
+type deleteResponse struct {
+	Success bool   `json:"Success"`
+	Error   string `json:"Error"`
+}
+
 // Test represents a statuscake Test
 type Test struct {
 	// ThiTestID is an int, use this to get more details about this test. If not provided will insert a new check, else will update
@@ -192,6 +197,7 @@ func valueToQueryStringValue(v reflect.Value) string {
 type Tests interface {
 	All() ([]*Test, error)
 	Put(*Test) (*Test, error)
+	Delete(TestID int) error
 }
 
 type tests struct {
@@ -230,7 +236,7 @@ func (tt *tests) Put(t *Test) (*Test, error) {
 		return nil, err
 	}
 
-	if ur.Success != true {
+	if !ur.Success {
 		return nil, &updateError{Issues: ur.Issues}
 	}
 
@@ -238,4 +244,24 @@ func (tt *tests) Put(t *Test) (*Test, error) {
 	t2.TestID = ur.InsertID
 
 	return &t2, err
+}
+
+func (tt *tests) Delete(testID int) error {
+	resp, err := tt.client.delete("/Tests/Delete", url.Values{"TestID": {fmt.Sprint(testID)}})
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	var dr deleteResponse
+	err = json.NewDecoder(resp.Body).Decode(&dr)
+	if err != nil {
+		return err
+	}
+
+	if !dr.Success {
+		return &deleteError{Message: dr.Error}
+	}
+
+	return nil
 }

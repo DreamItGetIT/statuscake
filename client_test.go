@@ -109,6 +109,20 @@ func TestClient_put(t *testing.T) {
 	assert.Equal("https://www.statuscake.com/API/hello?foo=bar", hc.requests[0].URL.String())
 }
 
+func TestClient_delete(t *testing.T) {
+	assert := assert.New(t)
+
+	c := New("random-user", "my-pass")
+	hc := &fakeHTTPClient{}
+	c.c = hc
+
+	v := url.Values{"foo": {"bar"}}
+	c.delete("/hello", v)
+	assert.Len(hc.requests, 1)
+	assert.Equal("DELETE", hc.requests[0].Method)
+	assert.Equal("https://www.statuscake.com/API/hello?foo=bar", hc.requests[0].URL.String())
+}
+
 func TestClient_Tests(t *testing.T) {
 	assert := assert.New(t)
 
