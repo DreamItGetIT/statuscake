@@ -95,6 +95,7 @@ type Test struct {
 	StatusCodes string `json:"StatusCodes" querystring:"StatusCodes"`
 }
 
+// Validate checks if the Test is valid. If it's invalid, it returns a ValidationError with all invalid fields. It returns nil otherwise.
 func (t *Test) Validate() error {
 	e := make(ValidationError)
 
@@ -145,6 +146,7 @@ func (t *Test) Validate() error {
 	return nil
 }
 
+// ToURLValues returns url.Values of all fields required to create/update a Test.
 func (t Test) ToURLValues() url.Values {
 	values := make(url.Values)
 	st := reflect.TypeOf(t)
@@ -171,9 +173,9 @@ func valueToQueryStringValue(v reflect.Value) string {
 	if v.Type().Name() == "bool" {
 		if v.Bool() {
 			return "1"
-		} else {
-			return "0"
 		}
+
+		return "0"
 	}
 
 	return fmt.Sprint(v)
