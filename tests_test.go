@@ -215,7 +215,7 @@ func TestTests_Delete_OK(t *testing.T) {
 	err := tt.Delete(1234)
 	require.Nil(err)
 
-	assert.Equal("/Tests/Delete", c.sentRequestPath)
+	assert.Equal("/Tests/Details", c.sentRequestPath)
 	assert.Equal("DELETE", c.sentRequestMethod)
 	assert.Equal(url.Values{"TestID": {"1234"}}, c.sentRequestValues)
 	assert.NotNil(c.sentRequestValues)

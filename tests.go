@@ -247,7 +247,7 @@ func (tt *tests) Put(t *Test) (*Test, error) {
 }
 
 func (tt *tests) Delete(testID int) error {
-	resp, err := tt.client.delete("/Tests/Delete", url.Values{"TestID": {fmt.Sprint(testID)}})
+	resp, err := tt.client.delete("/Tests/Details", url.Values{"TestID": {fmt.Sprint(testID)}})
 	if err != nil {
 		return err
 	}

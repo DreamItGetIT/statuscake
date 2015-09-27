@@ -16,7 +16,7 @@ type httpError struct {
 }
 
 func (e *httpError) Error() string {
-	return fmt.Sprintf("HTTP error: %d %s", e.statusCode, e.status)
+	return fmt.Sprintf("HTTP error: %d - %s", e.statusCode, e.status)
 }
 
 // ValidationError is a map where the key is the invalid field and the value is a message describing why the field is invalid.
