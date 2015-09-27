@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/url"
 	"reflect"
-	"strings"
 )
 
 const queryStringTag = "querystring"
@@ -15,21 +14,6 @@ type updateResponse struct {
 	Success  bool              `json:"Success"`
 	Message  string            `json:"Message"`
 	InsertID int               `json:"InsertID"`
-}
-
-type updateError struct {
-	Issues map[string]string
-}
-
-func (e *updateError) Error() string {
-	var messages []string
-
-	for k, v := range e.Issues {
-		m := fmt.Sprintf("%s %s", k, v)
-		messages = append(messages, m)
-	}
-
-	return strings.Join(messages, ", ")
 }
 
 // Test represents a statuscake Test

@@ -199,6 +199,7 @@ func TestTests_Put_Error(t *testing.T) {
 	assert.Nil(test2)
 
 	require.NotNil(err)
+	assert.IsType(&updateError{}, err)
 	assert.Contains(err.Error(), "issue a")
 }
 

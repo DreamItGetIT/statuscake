@@ -53,7 +53,19 @@ func (c *Client) newRequest(method string, path string, v url.Values, body io.Re
 }
 
 func (c *Client) doRequest(r *http.Request) (*http.Response, error) {
-	return c.c.Do(r)
+	resp, err := c.c.Do(r)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		return nil, &httpError{
+			status:     resp.Status,
+			statusCode: resp.StatusCode,
+		}
+	}
+
+	return resp, nil
 }
 
 func (c *Client) get(path string) (*http.Response, error) {

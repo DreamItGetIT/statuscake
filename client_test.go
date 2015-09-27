@@ -10,12 +10,17 @@ import (
 )
 
 type fakeHTTPClient struct {
-	requests []*http.Request
+	StatusCode int
+	requests   []*http.Request
 }
 
 func (c *fakeHTTPClient) Do(r *http.Request) (*http.Response, error) {
 	c.requests = append(c.requests, r)
-	return nil, nil
+	resp := &http.Response{
+		StatusCode: c.StatusCode,
+	}
+
+	return resp, nil
 }
 
 func TestClient(t *testing.T) {
@@ -46,7 +51,7 @@ func TestClient_doRequest(t *testing.T) {
 	require := require.New(t)
 
 	c := New("random-user", "my-pass")
-	hc := &fakeHTTPClient{}
+	hc := &fakeHTTPClient{StatusCode: 200}
 	c.c = hc
 
 	req, err := http.NewRequest("GET", "http://example.com/test", nil)
@@ -57,6 +62,24 @@ func TestClient_doRequest(t *testing.T) {
 
 	assert.Len(hc.requests, 1)
 	assert.Equal("http://example.com/test", hc.requests[0].URL.String())
+}
+
+func TestClient_doRequest_WithErrors(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := New("random-user", "my-pass")
+	hc := &fakeHTTPClient{
+		StatusCode: 500,
+	}
+	c.c = hc
+
+	req, err := http.NewRequest("GET", "http://example.com/test", nil)
+	require.Nil(err)
+
+	_, err = c.doRequest(req)
+	require.NotNil(err)
+	assert.IsType(&httpError{}, err)
 }
 
 func TestClient_get(t *testing.T) {
