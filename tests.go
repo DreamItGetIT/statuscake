@@ -5,9 +5,32 @@ import (
 	"fmt"
 	"net/url"
 	"reflect"
+	"strings"
 )
 
 const queryStringTag = "querystring"
+
+type updateResponse struct {
+	Issues   map[string]string `json:"Issues"`
+	Success  bool              `json:"Success"`
+	Message  string            `json:"Message"`
+	InsertID int               `json:"InsertID"`
+}
+
+type updateError struct {
+	Issues map[string]string
+}
+
+func (e *updateError) Error() string {
+	var messages []string
+
+	for k, v := range e.Issues {
+		m := fmt.Sprintf("%s %s", k, v)
+		messages = append(messages, m)
+	}
+
+	return strings.Join(messages, ", ")
+}
 
 // Test represents a statuscake Test
 type Test struct {
@@ -184,6 +207,7 @@ func valueToQueryStringValue(v reflect.Value) string {
 // Tests is a client that implements the `Tests` API.
 type Tests interface {
 	All() ([]*Test, error)
+	Put(*Test) (*Test, error)
 }
 
 type tests struct {
@@ -196,8 +220,8 @@ func newTests(c apiClient) Tests {
 	}
 }
 
-func (t *tests) All() ([]*Test, error) {
-	resp, err := t.client.get("/Tests")
+func (tt *tests) All() ([]*Test, error) {
+	resp, err := tt.client.get("/Tests")
 	if err != nil {
 		return nil, err
 	}
@@ -207,4 +231,27 @@ func (t *tests) All() ([]*Test, error) {
 	err = json.NewDecoder(resp.Body).Decode(&tests)
 
 	return tests, err
+}
+
+func (tt *tests) Put(t *Test) (*Test, error) {
+	resp, err := tt.client.put("/Tests/Update", t.ToURLValues())
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var ur updateResponse
+	err = json.NewDecoder(resp.Body).Decode(&ur)
+	if err != nil {
+		return nil, err
+	}
+
+	if ur.Success != true {
+		return nil, &updateError{Issues: ur.Issues}
+	}
+
+	t2 := *t
+	t2.TestID = ur.InsertID
+
+	return &t2, err
 }

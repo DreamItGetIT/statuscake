@@ -124,13 +124,15 @@ func TestTests_All(t *testing.T) {
 	require := require.New(t)
 
 	c := &fakeAPIClient{
-		fixture: "tests_ok.json",
+		fixture: "tests_all_ok.json",
 	}
 	tt := newTests(c)
 	tests, err := tt.All()
 	require.Nil(err)
 
-	assert.Equal("/Tests", c.requestedPath)
+	assert.Equal("/Tests", c.sentRequestPath)
+	assert.Equal("GET", c.sentRequestMethod)
+	assert.Nil(c.sentRequestValues)
 	assert.Len(tests, 2)
 
 	expectedTest := &Test{
@@ -156,13 +158,70 @@ func TestTests_All(t *testing.T) {
 	assert.Equal(expectedTest, tests[1])
 }
 
+func TestTests_Put_OK(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := &fakeAPIClient{
+		fixture: "tests_update_ok.json",
+	}
+	tt := newTests(c)
+
+	test1 := &Test{
+		WebsiteName: "foo",
+	}
+
+	test2, err := tt.Put(test1)
+	require.Nil(err)
+
+	assert.Equal("/Tests/Update", c.sentRequestPath)
+	assert.Equal("PUT", c.sentRequestMethod)
+	assert.NotNil(c.sentRequestValues)
+	assert.NotNil(test2)
+
+	assert.Equal(1234, test2.TestID)
+}
+
+func TestTests_Put_Error(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := &fakeAPIClient{
+		fixture: "tests_update_error.json",
+	}
+	tt := newTests(c)
+
+	test1 := &Test{
+		WebsiteName: "foo",
+	}
+
+	test2, err := tt.Put(test1)
+	assert.Nil(test2)
+
+	require.NotNil(err)
+	assert.Contains(err.Error(), "issue a")
+}
+
 type fakeAPIClient struct {
-	requestedPath string
-	fixture       string
+	sentRequestPath   string
+	sentRequestMethod string
+	sentRequestValues url.Values
+	fixture           string
+}
+
+func (c *fakeAPIClient) put(path string, v url.Values) (*http.Response, error) {
+	return c.all("PUT", path, v)
 }
 
 func (c *fakeAPIClient) get(path string) (*http.Response, error) {
-	c.requestedPath = path
+	return c.all("GET", path, nil)
+}
+
+func (c *fakeAPIClient) all(method string, path string, v url.Values) (*http.Response, error) {
+	c.sentRequestMethod = method
+	c.sentRequestPath = path
+	c.sentRequestValues = v
+
 	p := filepath.Join("fixtures", c.fixture)
 	f, err := os.Open(p)
 	if err != nil {

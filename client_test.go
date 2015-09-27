@@ -2,6 +2,7 @@ package statuscake
 
 import (
 	"net/http"
+	"net/url"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -31,7 +32,7 @@ func TestClient_newRequest(t *testing.T) {
 	require := require.New(t)
 
 	c := New("random-user", "my-pass")
-	r, err := c.newRequest("GET", "/hello", nil)
+	r, err := c.newRequest("GET", "/hello", nil, nil)
 
 	require.Nil(err)
 	assert.Equal("GET", r.Method)
@@ -69,6 +70,20 @@ func TestClient_get(t *testing.T) {
 	assert.Len(hc.requests, 1)
 	assert.Equal("GET", hc.requests[0].Method)
 	assert.Equal("https://www.statuscake.com/API/hello", hc.requests[0].URL.String())
+}
+
+func TestClient_put(t *testing.T) {
+	assert := assert.New(t)
+
+	c := New("random-user", "my-pass")
+	hc := &fakeHTTPClient{}
+	c.c = hc
+
+	v := url.Values{"foo": {"bar"}}
+	c.put("/hello", v)
+	assert.Len(hc.requests, 1)
+	assert.Equal("PUT", hc.requests[0].Method)
+	assert.Equal("https://www.statuscake.com/API/hello?foo=bar", hc.requests[0].URL.String())
 }
 
 func TestClient_Tests(t *testing.T) {

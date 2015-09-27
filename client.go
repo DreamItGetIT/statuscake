@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 const apiBaseURL = "https://www.statuscake.com/API"
@@ -14,6 +15,7 @@ type httpClient interface {
 
 type apiClient interface {
 	get(string) (*http.Response, error)
+	put(string, url.Values) (*http.Response, error)
 }
 
 // Client is the http client that wraps the remote API.
@@ -33,8 +35,12 @@ func New(username string, apiKey string) *Client {
 	}
 }
 
-func (c *Client) newRequest(method string, path string, body io.Reader) (*http.Request, error) {
+func (c *Client) newRequest(method string, path string, v url.Values, body io.Reader) (*http.Request, error) {
 	url := fmt.Sprintf("%s%s", apiBaseURL, path)
+	if v != nil {
+		url = fmt.Sprintf("%s?%s", url, v.Encode())
+	}
+
 	r, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return nil, err
@@ -51,7 +57,16 @@ func (c *Client) doRequest(r *http.Request) (*http.Response, error) {
 }
 
 func (c *Client) get(path string) (*http.Response, error) {
-	r, err := c.newRequest("GET", path, nil)
+	r, err := c.newRequest("GET", path, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.doRequest(r)
+}
+
+func (c *Client) put(path string, v url.Values) (*http.Response, error) {
+	r, err := c.newRequest("PUT", path, v, nil)
 	if err != nil {
 		return nil, err
 	}
