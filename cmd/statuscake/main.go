@@ -20,6 +20,7 @@ func init() {
 	commands = map[string]command{
 		"list":   cmdList,
 		"delete": cmdDelete,
+		"create": cmdCreate,
 	}
 }
 
@@ -81,6 +82,46 @@ func cmdDelete(c *statuscake.Client, args ...string) error {
 	}
 
 	return c.Tests().Delete(id)
+}
+
+func askString(name string) string {
+	var v string
+
+	fmt.Printf("%s: ", name)
+	_, err := fmt.Scanln(&v)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return v
+}
+
+func askInt(name string) int {
+	v := askString(name)
+	i, err := strconv.Atoi(v)
+	if err != nil {
+		log.Fatalf("Invalid number `%s`", v)
+	}
+
+	return i
+}
+
+func cmdCreate(c *statuscake.Client, args ...string) error {
+	t := &statuscake.Test{
+		WebsiteName: askString("WebsiteName"),
+		WebsiteURL:  askString("WebsiteURL"),
+		TestType:    askString("TestType"),
+		CheckRate:   askInt("CheckRate"),
+	}
+
+	t2, err := c.Tests().Put(t)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("CREATED: \n%+v\n", t2)
+
+	return nil
 }
 
 func usage() {
