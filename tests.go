@@ -24,7 +24,7 @@ type deleteResponse struct {
 // Test represents a statuscake Test
 type Test struct {
 	// ThiTestID is an int, use this to get more details about this test. If not provided will insert a new check, else will update
-	TestID int `json:"TestID" querystring:"TestID"`
+	TestID int `json:"TestID" querystring:"TestID" querystringoptions:"omitempty"`
 
 	// Sent tfalse To Unpause and true To Pause.
 	Paused bool `json:"Paused" querystring:"Paused"`
@@ -172,13 +172,35 @@ func (t Test) ToURLValues() url.Values {
 			ft = ft.Elem()
 		}
 
-		if tag != "" {
-			v := sv.Field(i)
+		v := sv.Field(i)
+		options := sf.Tag.Get("querystringoptions")
+		omit := options == "omitempty" && isEmptyValue(v)
+
+		if tag != "" && !omit {
 			values.Set(tag, valueToQueryStringValue(v))
 		}
 	}
 
 	return values
+}
+
+func isEmptyValue(v reflect.Value) bool {
+	switch v.Kind() {
+	case reflect.Array, reflect.Map, reflect.Slice, reflect.String:
+		return v.Len() == 0
+	case reflect.Bool:
+		return !v.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return v.Int() == 0
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+		return v.Uint() == 0
+	case reflect.Float32, reflect.Float64:
+		return v.Float() == 0
+	case reflect.Interface, reflect.Ptr:
+		return v.IsNil()
+	}
+
+	return false
 }
 
 func valueToQueryStringValue(v reflect.Value) string {

@@ -117,6 +117,11 @@ func TestTest_ToURLValues(t *testing.T) {
 	}
 
 	assert.Equal(expected, test.ToURLValues())
+
+	test.TestID = 0
+	delete(expected, "TestID")
+
+	assert.Equal(expected.Encode(), test.ToURLValues().Encode())
 }
 
 func TestTests_All(t *testing.T) {
