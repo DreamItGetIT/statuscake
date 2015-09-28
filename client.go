@@ -21,9 +21,10 @@ type apiClient interface {
 
 // Client is the http client that wraps the remote API.
 type Client struct {
-	c        httpClient
-	username string
-	apiKey   string
+	c           httpClient
+	username    string
+	apiKey      string
+	testsClient Tests
 }
 
 // New returns a new Client
@@ -98,5 +99,9 @@ func (c *Client) delete(path string, v url.Values) (*http.Response, error) {
 
 // Tests returns a client that implements the `Tests` API.
 func (c *Client) Tests() Tests {
-	return newTests(c)
+	if c.testsClient == nil {
+		c.testsClient = newTests(c)
+	}
+
+	return c.testsClient
 }

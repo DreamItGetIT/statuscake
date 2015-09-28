@@ -87,7 +87,7 @@ func usage() {
 	fmt.Printf("Usage:\n")
 	fmt.Printf("  %s COMMAND\n", os.Args[0])
 	fmt.Printf("Available commands:\n")
-	for k, _ := range commands {
+	for k := range commands {
 		fmt.Printf("  %+v\n", k)
 	}
 }
