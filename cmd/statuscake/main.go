@@ -4,14 +4,23 @@ import (
 	"fmt"
 	logpkg "log"
 	"os"
+	"strconv"
 
 	"github.com/DreamItGetIT/statuscake"
 )
 
 var log *logpkg.Logger
 
+type command func(*statuscake.Client, ...string) error
+
+var commands map[string]command
+
 func init() {
 	log = logpkg.New(os.Stderr, "", 0)
+	commands = map[string]command{
+		"list":   cmdList,
+		"delete": cmdDelete,
+	}
 }
 
 func colouredStatus(s string) string {
@@ -34,7 +43,7 @@ func getEnv(name string) string {
 	return v
 }
 
-func listTests(c *statuscake.Client) error {
+func cmdList(c *statuscake.Client, args ...string) error {
 	tt := c.Tests()
 	tests, err := tt.All()
 	if err != nil {
@@ -61,13 +70,47 @@ func listTests(c *statuscake.Client) error {
 	return nil
 }
 
+func cmdDelete(c *statuscake.Client, args ...string) error {
+	if len(args) != 1 {
+		return fmt.Errorf("command `delete` requires a single argument `TestID`")
+	}
+
+	id, err := strconv.Atoi(args[0])
+	if err != nil {
+		return err
+	}
+
+	return c.Tests().Delete(id)
+}
+
+func usage() {
+	fmt.Printf("Usage:\n")
+	fmt.Printf("  %s COMMAND\n", os.Args[0])
+	fmt.Printf("Available commands:\n")
+	for k, _ := range commands {
+		fmt.Printf("  %+v\n", k)
+	}
+}
+
 func main() {
 	username := getEnv("STATUSCAKE_USERNAME")
 	apikey := getEnv("STATUSCAKE_APIKEY")
 
+	if len(os.Args) < 2 {
+		usage()
+		os.Exit(1)
+	}
+
+	var err error
+
 	c := statuscake.New(username, apikey)
-	err := listTests(c)
+	if cmd, ok := commands[os.Args[1]]; ok {
+		err = cmd(c, os.Args[2:]...)
+	} else {
+		err = fmt.Errorf("Unknown command `%s`", os.Args[1])
+	}
+
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error running command `%s`: %s", os.Args[1], err.Error())
 	}
 }
