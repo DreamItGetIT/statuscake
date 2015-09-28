@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 const apiBaseURL = "https://www.statuscake.com/API"
@@ -80,7 +81,9 @@ func (c *Client) get(path string) (*http.Response, error) {
 }
 
 func (c *Client) put(path string, v url.Values) (*http.Response, error) {
-	r, err := c.newRequest("PUT", path, v, nil)
+	r, err := c.newRequest("PUT", path, nil, strings.NewReader(v.Encode()))
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
 	if err != nil {
 		return nil, err
 	}
