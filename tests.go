@@ -9,18 +9,6 @@ import (
 
 const queryStringTag = "querystring"
 
-type updateResponse struct {
-	Issues   map[string]string `json:"Issues"`
-	Success  bool              `json:"Success"`
-	Message  string            `json:"Message"`
-	InsertID int               `json:"InsertID"`
-}
-
-type deleteResponse struct {
-	Success bool   `json:"Success"`
-	Error   string `json:"Error"`
-}
-
 // Test represents a statuscake Test
 type Test struct {
 	// ThiTestID is an int, use this to get more details about this test. If not provided will insert a new check, else will update
