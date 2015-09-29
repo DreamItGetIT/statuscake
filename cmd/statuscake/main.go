@@ -144,7 +144,11 @@ func main() {
 
 	var err error
 
-	c := statuscake.New(username, apikey)
+	c, err := statuscake.New(statuscake.Auth{Username: username, Apikey: apikey})
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	if cmd, ok := commands[os.Args[1]]; ok {
 		err = cmd(c, os.Args[2:]...)
 	} else {

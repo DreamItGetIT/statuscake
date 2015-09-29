@@ -53,13 +53,16 @@ type Client struct {
 }
 
 // New returns a new Client
-func New(username string, apiKey string) *Client {
-	c := &http.Client{}
-	return &Client{
-		c:        c,
-		username: username,
-		apiKey:   apiKey,
+func New(auth Auth) (*Client, error) {
+	if err := auth.validate(); err != nil {
+		return nil, err
 	}
+
+	return &Client{
+		c:        &http.Client{},
+		username: auth.Username,
+		apiKey:   auth.Apikey,
+	}, nil
 }
 
 func (c *Client) newRequest(method string, path string, v url.Values, body io.Reader) (*http.Request, error) {

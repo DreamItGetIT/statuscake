@@ -33,9 +33,11 @@ func TestAuth_validate(t *testing.T) {
 }
 
 func TestClient(t *testing.T) {
+	require := require.New(t)
 	assert := assert.New(t)
 
-	c := New("random-user", "my-pass")
+	c, err := New(Auth{Username: "random-user", Apikey: "my-pass"})
+	require.Nil(err)
 
 	assert.Equal("random-user", c.username)
 	assert.Equal("my-pass", c.apiKey)
@@ -45,7 +47,9 @@ func TestClient_newRequest(t *testing.T) {
 	assert := assert.New(t)
 	require := require.New(t)
 
-	c := New("random-user", "my-pass")
+	c, err := New(Auth{Username: "random-user", Apikey: "my-pass"})
+	require.Nil(err)
+
 	r, err := c.newRequest("GET", "/hello", nil, nil)
 
 	require.Nil(err)
@@ -59,7 +63,9 @@ func TestClient_doRequest(t *testing.T) {
 	assert := assert.New(t)
 	require := require.New(t)
 
-	c := New("random-user", "my-pass")
+	c, err := New(Auth{Username: "random-user", Apikey: "my-pass"})
+	require.Nil(err)
+
 	hc := &fakeHTTPClient{StatusCode: 200}
 	c.c = hc
 
@@ -77,7 +83,9 @@ func TestClient_doRequest_WithErrors(t *testing.T) {
 	assert := assert.New(t)
 	require := require.New(t)
 
-	c := New("random-user", "my-pass")
+	c, err := New(Auth{Username: "random-user", Apikey: "my-pass"})
+	require.Nil(err)
+
 	hc := &fakeHTTPClient{
 		StatusCode: 500,
 	}
@@ -92,9 +100,12 @@ func TestClient_doRequest_WithErrors(t *testing.T) {
 }
 
 func TestClient_get(t *testing.T) {
+	require := require.New(t)
 	assert := assert.New(t)
 
-	c := New("random-user", "my-pass")
+	c, err := New(Auth{Username: "random-user", Apikey: "my-pass"})
+	require.Nil(err)
+
 	hc := &fakeHTTPClient{}
 	c.c = hc
 
@@ -108,7 +119,9 @@ func TestClient_put(t *testing.T) {
 	require := require.New(t)
 	assert := assert.New(t)
 
-	c := New("random-user", "my-pass")
+	c, err := New(Auth{Username: "random-user", Apikey: "my-pass"})
+	require.Nil(err)
+
 	hc := &fakeHTTPClient{}
 	c.c = hc
 
@@ -124,9 +137,12 @@ func TestClient_put(t *testing.T) {
 }
 
 func TestClient_delete(t *testing.T) {
+	require := require.New(t)
 	assert := assert.New(t)
 
-	c := New("random-user", "my-pass")
+	c, err := New(Auth{Username: "random-user", Apikey: "my-pass"})
+	require.Nil(err)
+
 	hc := &fakeHTTPClient{}
 	c.c = hc
 
@@ -138,9 +154,12 @@ func TestClient_delete(t *testing.T) {
 }
 
 func TestClient_Tests(t *testing.T) {
+	require := require.New(t)
 	assert := assert.New(t)
 
-	c := New("foo", "bar")
+	c, err := New(Auth{Username: "random-user", Apikey: "my-pass"})
+	require.Nil(err)
+
 	expected := &tests{
 		client: c,
 	}
