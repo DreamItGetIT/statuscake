@@ -1,9 +1,14 @@
 package statuscake
 
 import (
+	"bytes"
+	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -79,7 +84,7 @@ func TestClient_doRequest(t *testing.T) {
 	assert.Equal("http://example.com/test", hc.requests[0].URL.String())
 }
 
-func TestClient_doRequest_WithErrors(t *testing.T) {
+func TestClient_doRequest_WithHTTPErrors(t *testing.T) {
 	assert := assert.New(t)
 	require := require.New(t)
 
@@ -97,6 +102,27 @@ func TestClient_doRequest_WithErrors(t *testing.T) {
 	_, err = c.doRequest(req)
 	require.NotNil(err)
 	assert.IsType(&httpError{}, err)
+}
+
+func TestClient_doRequest_HttpAuthenticationErrors(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c, err := New(Auth{Username: "random-user", Apikey: "my-pass"})
+	require.Nil(err)
+
+	hc := &fakeHTTPClient{
+		StatusCode: 200,
+		Fixture:    "auth_error.json",
+	}
+	c.c = hc
+
+	req, err := http.NewRequest("GET", "http://example.com/test", nil)
+	require.Nil(err)
+
+	_, err = c.doRequest(req)
+	require.NotNil(err)
+	assert.IsType(&AuthenticationError{}, err)
 }
 
 func TestClient_get(t *testing.T) {
@@ -167,15 +193,43 @@ func TestClient_Tests(t *testing.T) {
 	assert.Equal(expected, c.Tests())
 }
 
+type fakeBody struct {
+	io.Reader
+}
+
+func (f *fakeBody) Close() error {
+	return nil
+}
+
 type fakeHTTPClient struct {
 	StatusCode int
+	Fixture    string
 	requests   []*http.Request
 }
 
 func (c *fakeHTTPClient) Do(r *http.Request) (*http.Response, error) {
 	c.requests = append(c.requests, r)
+	var body []byte
+
+	if c.Fixture != "" {
+		p := filepath.Join("fixtures", c.Fixture)
+		f, err := os.Open(p)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+
+		b, err := ioutil.ReadAll(f)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		body = b
+	}
+
 	resp := &http.Response{
 		StatusCode: c.StatusCode,
+		Body:       &fakeBody{Reader: bytes.NewReader(body)},
 	}
 
 	return resp, nil

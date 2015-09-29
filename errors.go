@@ -60,3 +60,14 @@ type deleteError struct {
 func (e *deleteError) Error() string {
 	return e.Message
 }
+
+// AuthenticationError implements the error interface and it's returned
+// when API responses have authentication errors
+type AuthenticationError struct {
+	errNo   int
+	message string
+}
+
+func (e *AuthenticationError) Error() string {
+	return fmt.Sprintf("%d, %s", e.errNo, e.message)
+}

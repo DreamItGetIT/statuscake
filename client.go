@@ -1,14 +1,25 @@
 package statuscake
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
 )
 
 const apiBaseURL = "https://www.statuscake.com/API"
+
+type responseBody struct {
+	io.Reader
+}
+
+func (r *responseBody) Close() error {
+	return nil
+}
 
 // Auth wraps the authorisation headers required for each request
 type Auth struct {
@@ -87,12 +98,34 @@ func (c *Client) doRequest(r *http.Request) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		return nil, &httpError{
 			status:     resp.Status,
 			statusCode: resp.StatusCode,
 		}
+	}
+
+	var aer autheticationErrorResponse
+
+	// We read and save the response body so that if we don't have error messages
+	// we can set it again for future usage
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(b, &aer)
+	if err == nil && aer.ErrNo == 0 && aer.Error != "" {
+		return nil, &AuthenticationError{
+			errNo:   aer.ErrNo,
+			message: aer.Error,
+		}
+	}
+
+	resp.Body = &responseBody{
+		Reader: bytes.NewReader(b),
 	}
 
 	return resp, nil
