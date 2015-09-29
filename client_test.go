@@ -1,6 +1,7 @@
 package statuscake
 
 import (
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"testing"
@@ -96,6 +97,7 @@ func TestClient_get(t *testing.T) {
 }
 
 func TestClient_put(t *testing.T) {
+	require := require.New(t)
 	assert := assert.New(t)
 
 	c := New("random-user", "my-pass")
@@ -106,7 +108,11 @@ func TestClient_put(t *testing.T) {
 	c.put("/hello", v)
 	assert.Len(hc.requests, 1)
 	assert.Equal("PUT", hc.requests[0].Method)
-	assert.Equal("https://www.statuscake.com/API/hello?foo=bar", hc.requests[0].URL.String())
+	assert.Equal("https://www.statuscake.com/API/hello", hc.requests[0].URL.String())
+
+	b, err := ioutil.ReadAll(hc.requests[0].Body)
+	require.Nil(err)
+	assert.Equal("foo=bar", string(b))
 }
 
 func TestClient_delete(t *testing.T) {
