@@ -10,18 +10,26 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type fakeHTTPClient struct {
-	StatusCode int
-	requests   []*http.Request
-}
+func TestAuth_validate(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
 
-func (c *fakeHTTPClient) Do(r *http.Request) (*http.Response, error) {
-	c.requests = append(c.requests, r)
-	resp := &http.Response{
-		StatusCode: c.StatusCode,
-	}
+	auth := &Auth{}
+	err := auth.validate()
 
-	return resp, nil
+	require.NotNil(err)
+	assert.Contains(err.Error(), "Username is required")
+	assert.Contains(err.Error(), "Apikey is required")
+
+	auth.Username = "foo"
+	err = auth.validate()
+
+	require.NotNil(err)
+	assert.Equal("Apikey is required", err.Error())
+
+	auth.Apikey = "bar"
+	err = auth.validate()
+	assert.Nil(err)
 }
 
 func TestClient(t *testing.T) {
@@ -138,4 +146,18 @@ func TestClient_Tests(t *testing.T) {
 	}
 
 	assert.Equal(expected, c.Tests())
+}
+
+type fakeHTTPClient struct {
+	StatusCode int
+	requests   []*http.Request
+}
+
+func (c *fakeHTTPClient) Do(r *http.Request) (*http.Response, error) {
+	c.requests = append(c.requests, r)
+	resp := &http.Response{
+		StatusCode: c.StatusCode,
+	}
+
+	return resp, nil
 }

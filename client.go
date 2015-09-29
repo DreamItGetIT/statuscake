@@ -10,6 +10,30 @@ import (
 
 const apiBaseURL = "https://www.statuscake.com/API"
 
+// Auth wraps the authorisation headers required for each request
+type Auth struct {
+	Username string
+	Apikey   string
+}
+
+func (a *Auth) validate() error {
+	e := make(ValidationError)
+
+	if a.Username == "" {
+		e["Username"] = "is required"
+	}
+
+	if a.Apikey == "" {
+		e["Apikey"] = "is required"
+	}
+
+	if len(e) > 0 {
+		return e
+	}
+
+	return nil
+}
+
 type httpClient interface {
 	Do(*http.Request) (*http.Response, error)
 }
