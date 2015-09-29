@@ -1,7 +1,10 @@
 // Package statuscake implements a client for statuscake.com API.
 //
 //  // list all `Tests`
-//  c := statuscake.New(statuscake.Auth{Username: username, Apikey: apikey})
+//  c, err := statuscake.New(statuscake.Auth{Username: username, Apikey: apikey})
+//  if err != nil {
+//    log.Fatal(err)
+//  }
 //
 //  tests, err := c.Tests().All()
 //  if err != nil {
