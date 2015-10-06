@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"reflect"
+	"strings"
 )
 
 const queryStringTag = "querystring"
@@ -36,7 +37,7 @@ type Test struct {
 	Uptime float64 `json:"Uptime"`
 
 	// Any test locations seperated by a comma (using the Node Location IDs)
-	NodeLocations string `json:"NodeLocations" querystring:"NodeLocations"`
+	NodeLocations []string `json:"NodeLocations" querystring:"NodeLocations"`
 
 	// Timeout in an int form representing seconds.
 	Timeout int `json:"Timeout" querystring:"Timeout"`
@@ -73,14 +74,11 @@ type Test struct {
 	// A string that should either be found or not found.
 	FindString string `json:"FindString" querystring:"FindString"`
 
-	// If the above string should be found to trigger a alert. 1 = will trigger if FindString found
-	DoNotFind int `json:"DoNotFind" querystring:"DoNotFind"`
+	// If the above string should be found to trigger a alert. true will trigger if FindString found
+	DoNotFind bool `json:"DoNotFind" querystring:"DoNotFind"`
 
 	// What type of test type to use. Accepted values are HTTP, TCP, PING
 	TestType string `json:"TestType" querystring:"TestType"`
-
-	// A contact group ID assoicated with account to use.
-	ContactGroup int `json:"ContactGroup" querystring:"ContactGroup"`
 
 	// Use 1 to TURN OFF real browser testing
 	RealBrowser int `json:"RealBrowser" querystring:"RealBrowser"`
@@ -198,6 +196,12 @@ func valueToQueryStringValue(v reflect.Value) string {
 		}
 
 		return "0"
+	}
+
+	if v.Type().Kind() == reflect.Slice {
+		if ss, ok := v.Interface().([]string); ok {
+			return strings.Join(ss, ",")
+		}
 	}
 
 	return fmt.Sprint(v)
