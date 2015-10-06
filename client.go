@@ -50,7 +50,7 @@ type httpClient interface {
 }
 
 type apiClient interface {
-	get(string) (*http.Response, error)
+	get(string, url.Values) (*http.Response, error)
 	delete(string, url.Values) (*http.Response, error)
 	put(string, url.Values) (*http.Response, error)
 }
@@ -131,8 +131,8 @@ func (c *Client) doRequest(r *http.Request) (*http.Response, error) {
 	return resp, nil
 }
 
-func (c *Client) get(path string) (*http.Response, error) {
-	r, err := c.newRequest("GET", path, nil, nil)
+func (c *Client) get(path string, v url.Values) (*http.Response, error) {
+	r, err := c.newRequest("GET", path, v, nil)
 	if err != nil {
 		return nil, err
 	}

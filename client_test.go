@@ -135,7 +135,7 @@ func TestClient_get(t *testing.T) {
 	hc := &fakeHTTPClient{}
 	c.c = hc
 
-	c.get("/hello")
+	c.get("/hello", nil)
 	assert.Len(hc.requests, 1)
 	assert.Equal("GET", hc.requests[0].Method)
 	assert.Equal("https://www.statuscake.com/API/hello", hc.requests[0].URL.String())

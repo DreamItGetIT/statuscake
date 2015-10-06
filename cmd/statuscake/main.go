@@ -19,6 +19,7 @@ func init() {
 	log = logpkg.New(os.Stderr, "", 0)
 	commands = map[string]command{
 		"list":   cmdList,
+		"detail": cmdDetail,
 		"delete": cmdDelete,
 		"create": cmdCreate,
 	}
@@ -63,10 +64,44 @@ func cmdList(c *statuscake.Client, args ...string) error {
 		fmt.Printf("  WebsiteName: %s\n", t.WebsiteName)
 		fmt.Printf("  TestType: %s\n", t.TestType)
 		fmt.Printf("  Paused: %s\n", paused)
-		fmt.Printf("  ContactGroup: %d\n", t.ContactGroup)
 		fmt.Printf("  ContactID: %d\n", t.ContactID)
 		fmt.Printf("  Uptime: %f\n", t.Uptime)
 	}
+
+	return nil
+}
+
+func cmdDetail(c *statuscake.Client, args ...string) error {
+	if len(args) != 1 {
+		return fmt.Errorf("command `detail` requires a single argument `TestID`")
+	}
+
+	id, err := strconv.Atoi(args[0])
+	if err != nil {
+		return err
+	}
+
+	tt := c.Tests()
+	t, err := tt.Detail(id)
+	if err != nil {
+		return err
+	}
+
+	var paused string
+	if t.Paused {
+		paused = "yes"
+	} else {
+		paused = "no"
+	}
+
+	fmt.Printf("* %d: %s\n", t.TestID, colouredStatus(t.Status))
+	fmt.Printf("  WebsiteName: %s\n", t.WebsiteName)
+	fmt.Printf("  WebsiteURL: %s\n", t.WebsiteURL)
+	fmt.Printf("  PingURL: %s\n", t.PingURL)
+	fmt.Printf("  TestType: %s\n", t.TestType)
+	fmt.Printf("  Paused: %s\n", paused)
+	fmt.Printf("  ContactID: %d\n", t.ContactID)
+	fmt.Printf("  Uptime: %f\n", t.Uptime)
 
 	return nil
 }
@@ -114,7 +149,7 @@ func cmdCreate(c *statuscake.Client, args ...string) error {
 		CheckRate:   askInt("CheckRate"),
 	}
 
-	t2, err := c.Tests().Put(t)
+	t2, err := c.Tests().Update(t)
 	if err != nil {
 		return err
 	}
