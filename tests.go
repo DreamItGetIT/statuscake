@@ -45,7 +45,7 @@ type Test struct {
 	// A URL to ping if a site goes down.
 	PingURL string `json:"PingURL" querystring:"PingURL"`
 
-	Confirmation int `json:"Confirmation" querystring:"Confirmation"`
+	Confirmation int `json:"Confirmationi,string" querystring:"Confirmation"`
 
 	// The number of seconds between checks.
 	CheckRate int `json:"CheckRate" querystring:"CheckRate"`
@@ -210,6 +210,7 @@ func valueToQueryStringValue(v reflect.Value) string {
 // Tests is a client that implements the `Tests` API.
 type Tests interface {
 	All() ([]*Test, error)
+	Detail(int) (*Test, error)
 	Put(*Test) (*Test, error)
 	Delete(TestID int) error
 }
@@ -225,7 +226,7 @@ func newTests(c apiClient) Tests {
 }
 
 func (tt *tests) All() ([]*Test, error) {
-	resp, err := tt.client.get("/Tests")
+	resp, err := tt.client.get("/Tests", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -278,4 +279,20 @@ func (tt *tests) Delete(testID int) error {
 	}
 
 	return nil
+}
+
+func (tt *tests) Detail(testID int) (*Test, error) {
+	resp, err := tt.client.get("/Tests/Details", url.Values{"TestID": {fmt.Sprint(testID)}})
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var dr *detailResponse
+	err = json.NewDecoder(resp.Body).Decode(&dr)
+	if err != nil {
+		return nil, err
+	}
+
+	return dr.test(), nil
 }

@@ -108,7 +108,6 @@ func TestTest_ToURLValues(t *testing.T) {
 		"FindString":    {"hello"},
 		"DoNotFind":     {"1"},
 		"TestType":      {"HTTP"},
-		"ContactGroup":  {"11"},
 		"RealBrowser":   {"1"},
 		"TriggerRate":   {"50"},
 		"TestTags":      {"tag1,tag2"},
@@ -222,7 +221,6 @@ func TestTests_Delete_OK(t *testing.T) {
 	assert.Equal("/Tests/Details", c.sentRequestPath)
 	assert.Equal("DELETE", c.sentRequestMethod)
 	assert.Equal(url.Values{"TestID": {"1234"}}, c.sentRequestValues)
-	assert.NotNil(c.sentRequestValues)
 }
 
 func TestTests_Delete_Error(t *testing.T) {
@@ -237,6 +235,37 @@ func TestTests_Delete_Error(t *testing.T) {
 	err := tt.Delete(1234)
 	require.NotNil(err)
 	assert.Equal("this is an error", err.Error())
+}
+
+func TestTests_Detail_OK(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := &fakeAPIClient{
+		fixture: "tests_detail_ok.json",
+	}
+	tt := newTests(c)
+
+	test, err := tt.Detail(1234)
+	require.Nil(err)
+
+	assert.Equal("/Tests/Details", c.sentRequestPath)
+	assert.Equal("GET", c.sentRequestMethod)
+	assert.Equal(url.Values{"TestID": {"1234"}}, c.sentRequestValues)
+
+	assert.Equal(test.TestID, 6735)
+	assert.Equal(test.TestType, "HTTP")
+	assert.Equal(test.Paused, false)
+	assert.Equal(test.WebsiteName, "NL")
+	assert.Equal(test.ContactID, 536)
+	assert.Equal(test.Status, "Up")
+	assert.Equal(test.Uptime, 0.0)
+	assert.Equal(test.CheckRate, 60)
+	assert.Equal(test.Timeout, 40)
+	assert.Equal(test.LogoImage, "")
+	assert.Equal(test.WebsiteHost, "Various")
+	assert.Equal(test.FindString, "")
+	assert.Equal(test.DoNotFind, false)
 }
 
 type fakeAPIClient struct {
@@ -254,8 +283,8 @@ func (c *fakeAPIClient) delete(path string, v url.Values) (*http.Response, error
 	return c.all("DELETE", path, v)
 }
 
-func (c *fakeAPIClient) get(path string) (*http.Response, error) {
-	return c.all("GET", path, nil)
+func (c *fakeAPIClient) get(path string, v url.Values) (*http.Response, error) {
+	return c.all("GET", path, v)
 }
 
 func (c *fakeAPIClient) all(method string, path string, v url.Values) (*http.Response, error) {
