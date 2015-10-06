@@ -211,7 +211,7 @@ func valueToQueryStringValue(v reflect.Value) string {
 type Tests interface {
 	All() ([]*Test, error)
 	Detail(int) (*Test, error)
-	Put(*Test) (*Test, error)
+	Update(*Test) (*Test, error)
 	Delete(TestID int) error
 }
 
@@ -238,7 +238,7 @@ func (tt *tests) All() ([]*Test, error) {
 	return tests, err
 }
 
-func (tt *tests) Put(t *Test) (*Test, error) {
+func (tt *tests) Update(t *Test) (*Test, error) {
 	resp, err := tt.client.put("/Tests/Update", t.ToURLValues())
 	if err != nil {
 		return nil, err

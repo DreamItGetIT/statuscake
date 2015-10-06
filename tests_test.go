@@ -161,7 +161,7 @@ func TestTests_All(t *testing.T) {
 	assert.Equal(expectedTest, tests[1])
 }
 
-func TestTests_Put_OK(t *testing.T) {
+func TestTests_Update_OK(t *testing.T) {
 	assert := assert.New(t)
 	require := require.New(t)
 
@@ -174,7 +174,7 @@ func TestTests_Put_OK(t *testing.T) {
 		WebsiteName: "foo",
 	}
 
-	test2, err := tt.Put(test1)
+	test2, err := tt.Update(test1)
 	require.Nil(err)
 
 	assert.Equal("/Tests/Update", c.sentRequestPath)
@@ -185,7 +185,7 @@ func TestTests_Put_OK(t *testing.T) {
 	assert.Equal(1234, test2.TestID)
 }
 
-func TestTests_Put_Error(t *testing.T) {
+func TestTests_Update_Error(t *testing.T) {
 	assert := assert.New(t)
 	require := require.New(t)
 
@@ -198,7 +198,7 @@ func TestTests_Put_Error(t *testing.T) {
 		WebsiteName: "foo",
 	}
 
-	test2, err := tt.Put(test1)
+	test2, err := tt.Update(test1)
 	assert.Nil(test2)
 
 	require.NotNil(err)

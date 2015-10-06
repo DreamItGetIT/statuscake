@@ -149,7 +149,7 @@ func cmdCreate(c *statuscake.Client, args ...string) error {
 		CheckRate:   askInt("CheckRate"),
 	}
 
-	t2, err := c.Tests().Put(t)
+	t2, err := c.Tests().Update(t)
 	if err != nil {
 		return err
 	}
