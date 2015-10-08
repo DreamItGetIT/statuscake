@@ -25,6 +25,10 @@
 //    log.Fatal(err)
 //  }
 //
-//  t2 := c.Tests().Put(t)
+//  t2 := c.Tests().Update(t)
 //  fmt.Printf("New Test created with id: %d\n", t2.TestID)
+//
+//  // get Tests details
+//  t, err := tt.Detail(id)
+//  ...
 package statuscake
