@@ -206,6 +206,27 @@ func TestTests_Update_Error(t *testing.T) {
 	assert.Contains(err.Error(), "issue a")
 }
 
+func TestTests_Update_ErrorWithSliceOfIssues(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := &fakeAPIClient{
+		fixture: "tests_update_error_slice_of_issues.json",
+	}
+	tt := newTests(c)
+
+	test1 := &Test{
+		WebsiteName: "foo",
+	}
+
+	test2, err := tt.Update(test1)
+	assert.Nil(test2)
+
+	require.NotNil(err)
+	assert.IsType(&updateError{}, err)
+	assert.Equal("hello, world", err.Error())
+}
+
 func TestTests_Delete_OK(t *testing.T) {
 	assert := assert.New(t)
 	require := require.New(t)

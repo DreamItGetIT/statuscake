@@ -6,10 +6,10 @@ type autheticationErrorResponse struct {
 }
 
 type updateResponse struct {
-	Issues   map[string]string `json:"Issues"`
-	Success  bool              `json:"Success"`
-	Message  string            `json:"Message"`
-	InsertID int               `json:"InsertID"`
+	Issues   interface{} `json:"Issues"`
+	Success  bool        `json:"Success"`
+	Message  string      `json:"Message"`
+	InsertID int         `json:"InsertID"`
 }
 
 type deleteResponse struct {

@@ -22,6 +22,7 @@ func init() {
 		"detail": cmdDetail,
 		"delete": cmdDelete,
 		"create": cmdCreate,
+		"update": cmdUpdate,
 	}
 }
 
@@ -155,6 +156,38 @@ func cmdCreate(c *statuscake.Client, args ...string) error {
 	}
 
 	fmt.Printf("CREATED: \n%+v\n", t2)
+
+	return nil
+}
+
+func cmdUpdate(c *statuscake.Client, args ...string) error {
+	if len(args) != 1 {
+		return fmt.Errorf("command `update` requires a single argument `TestID`")
+	}
+
+	id, err := strconv.Atoi(args[0])
+	if err != nil {
+		return err
+	}
+
+	tt := c.Tests()
+	t, err := tt.Detail(id)
+	if err != nil {
+		return err
+	}
+
+	t.TestID = id
+	t.WebsiteName = askString(fmt.Sprintf("WebsiteName [%s]", t.WebsiteName))
+	t.WebsiteURL = askString(fmt.Sprintf("WebsiteURL [%s]", t.WebsiteURL))
+	t.TestType = askString(fmt.Sprintf("TestType [%s]", t.TestType))
+	t.CheckRate = askInt(fmt.Sprintf("CheckRate [%d]", t.CheckRate))
+
+	t2, err := c.Tests().Update(t)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("UPDATED: \n%+v\n", t2)
 
 	return nil
 }

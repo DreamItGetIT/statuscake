@@ -34,15 +34,22 @@ func (e ValidationError) Error() string {
 }
 
 type updateError struct {
-	Issues map[string]string
+	Issues interface{}
 }
 
 func (e *updateError) Error() string {
 	var messages []string
 
-	for k, v := range e.Issues {
-		m := fmt.Sprintf("%s %s", k, v)
-		messages = append(messages, m)
+	if issues, ok := e.Issues.(map[string]interface{}); ok {
+		for k, v := range issues {
+			m := fmt.Sprintf("%s %s", k, v)
+			messages = append(messages, m)
+		}
+	} else if issues, ok := e.Issues.([]interface{}); ok {
+		for _, v := range issues {
+			m := fmt.Sprint(v)
+			messages = append(messages, m)
+		}
 	}
 
 	return strings.Join(messages, ", ")
