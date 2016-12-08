@@ -59,7 +59,7 @@ func TestClient_newRequest(t *testing.T) {
 
 	require.Nil(err)
 	assert.Equal("GET", r.Method)
-	assert.Equal("https://www.statuscake.com/API/hello", r.URL.String())
+	assert.Equal("https://app.statuscake.com/API/hello", r.URL.String())
 	assert.Equal("random-user", r.Header.Get("Username"))
 	assert.Equal("my-pass", r.Header.Get("API"))
 }
@@ -138,7 +138,7 @@ func TestClient_get(t *testing.T) {
 	c.get("/hello", nil)
 	assert.Len(hc.requests, 1)
 	assert.Equal("GET", hc.requests[0].Method)
-	assert.Equal("https://www.statuscake.com/API/hello", hc.requests[0].URL.String())
+	assert.Equal("https://app.statuscake.com/API/hello", hc.requests[0].URL.String())
 }
 
 func TestClient_put(t *testing.T) {
@@ -155,7 +155,7 @@ func TestClient_put(t *testing.T) {
 	c.put("/hello", v)
 	assert.Len(hc.requests, 1)
 	assert.Equal("PUT", hc.requests[0].Method)
-	assert.Equal("https://www.statuscake.com/API/hello", hc.requests[0].URL.String())
+	assert.Equal("https://app.statuscake.com/API/hello", hc.requests[0].URL.String())
 
 	b, err := ioutil.ReadAll(hc.requests[0].Body)
 	require.Nil(err)
@@ -176,7 +176,7 @@ func TestClient_delete(t *testing.T) {
 	c.delete("/hello", v)
 	assert.Len(hc.requests, 1)
 	assert.Equal("DELETE", hc.requests[0].Method)
-	assert.Equal("https://www.statuscake.com/API/hello?foo=bar", hc.requests[0].URL.String())
+	assert.Equal("https://app.statuscake.com/API/hello?foo=bar", hc.requests[0].URL.String())
 }
 
 func TestClient_Tests(t *testing.T) {
