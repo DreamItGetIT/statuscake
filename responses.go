@@ -27,6 +27,7 @@ type detailResponse struct {
 	ContactID       int      `json:"ContactID"`
 	Status          string   `json:"Status"`
 	Uptime          float64  `json:"Uptime"`
+	CustomHeader    string   `json:"CustomHeader"`
 	CheckRate       int      `json:"CheckRate"`
 	Timeout         int      `json:"Timeout"`
 	LogoImage       string   `json:"LogoImage"`
@@ -53,6 +54,7 @@ func (d *detailResponse) test() *Test {
 		Paused:        d.Paused,
 		WebsiteName:   d.WebsiteName,
 		WebsiteURL:    d.URI,
+		CustomHeader:  d.CustomHeader,
 		ContactID:     d.ContactID,
 		Status:        d.Status,
 		Uptime:        d.Uptime,

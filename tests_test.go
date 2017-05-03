@@ -25,6 +25,7 @@ func TestTest_Validate(t *testing.T) {
 		RealBrowser:  100,
 		TriggerRate:  100,
 		CheckRate:    100000,
+		CustomHeader: "here be dragons",
 		WebsiteName:  "",
 		WebsiteURL:   "",
 	}
@@ -43,6 +44,7 @@ func TestTest_Validate(t *testing.T) {
 	assert.Contains(message, "TestType must be HTTP, TCP, or PING")
 	assert.Contains(message, "RealBrowser must be 0 or 1")
 	assert.Contains(message, "TriggerRate must be between 0 and 59")
+	assert.Contains(message, "CustomHeader must be provided as json string")
 
 	test.Timeout = 10
 	test.Confirmation = 2
@@ -54,6 +56,7 @@ func TestTest_Validate(t *testing.T) {
 	test.CheckRate = 10
 	test.WebsiteName = "Foo"
 	test.WebsiteURL = "http://example.com"
+	test.CustomHeader = `{"test": 15}`
 
 	err = test.Validate()
 	assert.Nil(err)
@@ -66,6 +69,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		TestID:        123,
 		Paused:        true,
 		WebsiteName:   "Foo Bar",
+		CustomHeader:  `{"some":{"json": ["value"]}}`,
 		WebsiteURL:    "http://example.com",
 		Port:          3000,
 		NodeLocations: []string{"foo", "bar"},
@@ -93,6 +97,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		"Paused":        {"1"},
 		"WebsiteName":   {"Foo Bar"},
 		"WebsiteURL":    {"http://example.com"},
+		"CustomHeader":  {`{"some":{"json": ["value"]}}`},
 		"Port":          {"3000"},
 		"NodeLocations": {"foo,bar"},
 		"Timeout":       {"11"},
@@ -279,6 +284,7 @@ func TestTests_Detail_OK(t *testing.T) {
 	assert.Equal(test.TestType, "HTTP")
 	assert.Equal(test.Paused, false)
 	assert.Equal(test.WebsiteName, "NL")
+	assert.Equal(test.CustomHeader, `{"some":{"json": ["value"]}}`)
 	assert.Equal(test.ContactID, 536)
 	assert.Equal(test.Status, "Up")
 	assert.Equal(test.Uptime, 0.0)
