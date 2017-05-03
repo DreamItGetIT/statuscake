@@ -21,6 +21,9 @@ type Test struct {
 	// Website name. Tags are stripped out
 	WebsiteName string `json:"WebsiteName" querystring:"WebsiteName"`
 
+	// CustomHeader. A special header that will be sent along with the HTTP tests.
+	CustomHeader string `json:"CustomHeader" querystring:"CustomHeader"`
+
 	// Test location, either an IP (for TCP and Ping) or a fully qualified URL for other TestTypes
 	WebsiteURL string `json:"WebsiteURL" querystring:"WebsiteURL"`
 
@@ -135,6 +138,10 @@ func (t *Test) Validate() error {
 
 	if t.TriggerRate < 0 || t.TriggerRate > 59 {
 		e["TriggerRate"] = "must be between 0 and 59"
+	}
+	var jsonVerifiable map[string]interface{}
+	if json.Unmarshal([]byte(t.CustomHeader), &jsonVerifiable) != nil {
+		e["CustomHeader"] = "must be provided as json string"
 	}
 
 	if len(e) > 0 {

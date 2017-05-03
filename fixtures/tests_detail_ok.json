@@ -3,6 +3,7 @@
   "TestType": "HTTP",
   "Paused": false,
   "WebsiteName": "NL",
+  "CustomHeader": "{\"some\":{\"json\": [\"value\"]}}",
   "ContactGroup": "StatusCake Alerts",
   "ContactID": 536,
   "Status": "Up",
