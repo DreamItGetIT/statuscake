@@ -25,6 +25,6 @@
   "Processing": false,
   "ProcessingState": "Pretest",
   "ProcessingOn": "dalas.localdomain",
-  "DownTimes": "0"
+  "DownTimes": "0",
+  "UseJar": false
 }
-

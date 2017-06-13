@@ -45,6 +45,7 @@ type detailResponse struct {
 	DownTimes       int      `json:"DownTimes,string"`
 	Sensitive       bool     `json:"Sensitive"`
 	TriggerRate     int      `json:"TriggerRate,string"`
+	UseJar          bool     `json:"UseJar"`
 }
 
 func (d *detailResponse) test() *Test {
@@ -68,5 +69,6 @@ func (d *detailResponse) test() *Test {
 		DoNotFind:     d.DoNotFind,
 		Port:          d.Port,
 		TriggerRate:   d.TriggerRate,
+		UseJar:        d.UseJar,
 	}
 }

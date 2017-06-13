@@ -96,7 +96,7 @@ type Test struct {
 	StatusCodes string `json:"StatusCodes" querystring:"StatusCodes"`
 
 	// Set to 1 to enable the Cookie Jar. Required for some redirects.
-	UseJar int `json:"UseJar" querystring:"UseJar"`
+	UseJar bool `json:"UseJar" querystring:"UseJar"`
 }
 
 // Validate checks if the Test is valid. If it's invalid, it returns a ValidationError with all invalid fields. It returns nil otherwise.
@@ -129,10 +129,6 @@ func (t *Test) Validate() error {
 
 	if t.Virus < 0 || t.Virus > 1 {
 		e["Virus"] = "must be 0 or 1"
-	}
-
-	if t.UseJar < 0 || t.UseJar > 1 {
-		e["UseJar"] = "must be 0 or 1"
 	}
 
 	if t.TestType != "HTTP" && t.TestType != "TCP" && t.TestType != "PING" {
