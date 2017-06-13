@@ -21,6 +21,7 @@ func TestTest_Validate(t *testing.T) {
 		Confirmation: 100,
 		Public:       200,
 		Virus:        200,
+		UseJar:       200,
 		TestType:     "FTP",
 		RealBrowser:  100,
 		TriggerRate:  100,
@@ -41,6 +42,7 @@ func TestTest_Validate(t *testing.T) {
 	assert.Contains(message, "CheckRate must be between 0 and 23999")
 	assert.Contains(message, "Public must be 0 or 1")
 	assert.Contains(message, "Virus must be 0 or 1")
+	assert.Contains(message, "UseJar must be 0 or 1")
 	assert.Contains(message, "TestType must be HTTP, TCP, or PING")
 	assert.Contains(message, "RealBrowser must be 0 or 1")
 	assert.Contains(message, "TriggerRate must be between 0 and 59")
@@ -54,6 +56,7 @@ func TestTest_Validate(t *testing.T) {
 	test.RealBrowser = 1
 	test.TriggerRate = 50
 	test.CheckRate = 10
+	test.UseJar = 1
 	test.WebsiteName = "Foo"
 	test.WebsiteURL = "http://example.com"
 	test.CustomHeader = `{"test": 15}`
@@ -90,6 +93,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		TriggerRate:   50,
 		TestTags:      "tag1,tag2",
 		StatusCodes:   "500",
+		UseJar:        1,
 	}
 
 	expected := url.Values{
@@ -118,6 +122,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		"TriggerRate":   {"50"},
 		"TestTags":      {"tag1,tag2"},
 		"StatusCodes":   {"500"},
+		"UseJar":        {"1"},
 	}
 
 	assert.Equal(expected, test.ToURLValues())
