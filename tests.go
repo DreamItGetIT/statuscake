@@ -94,6 +94,9 @@ type Test struct {
 
 	// Comma Seperated List of StatusCodes to Trigger Error on (on Update will replace, so send full list each time)
 	StatusCodes string `json:"StatusCodes" querystring:"StatusCodes"`
+
+	// Set to 1 to enable the Cookie Jar. Required for some redirects.
+	UseJar bool `json:"UseJar" querystring:"UseJar"`
 }
 
 // Validate checks if the Test is valid. If it's invalid, it returns a ValidationError with all invalid fields. It returns nil otherwise.
