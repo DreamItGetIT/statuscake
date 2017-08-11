@@ -46,6 +46,7 @@ type detailResponse struct {
 	Sensitive       bool     `json:"Sensitive"`
 	TriggerRate     int      `json:"TriggerRate,string"`
 	UseJar          bool     `json:"UseJar"`
+	PostRaw         string   `json:"PostRaw"`
 }
 
 func (d *detailResponse) test() *Test {
@@ -70,5 +71,6 @@ func (d *detailResponse) test() *Test {
 		Port:          d.Port,
 		TriggerRate:   d.TriggerRate,
 		UseJar:        d.UseJar,
+		PostRaw:       d.PostRaw,
 	}
 }
