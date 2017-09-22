@@ -97,6 +97,9 @@ type Test struct {
 
 	// Set to 1 to enable the Cookie Jar. Required for some redirects.
 	UseJar bool `json:"UseJar" querystring:"UseJar"`
+
+	// Raw POST data seperated by an ampersand
+	PostRaw string `json:"PostRaw" querystring:"PostRaw"`
 }
 
 // Validate checks if the Test is valid. If it's invalid, it returns a ValidationError with all invalid fields. It returns nil otherwise.
@@ -141,6 +144,10 @@ func (t *Test) Validate() error {
 
 	if t.TriggerRate < 0 || t.TriggerRate > 59 {
 		e["TriggerRate"] = "must be between 0 and 59"
+	}
+
+	if t.PostRaw != "" && t.TestType != "HTTP" {
+		e["PostRaw"] = "must be HTTP to submit a POST request"
 	}
 	var jsonVerifiable map[string]interface{}
 	if json.Unmarshal([]byte(t.CustomHeader), &jsonVerifiable) != nil {

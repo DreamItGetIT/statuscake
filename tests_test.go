@@ -119,6 +119,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		"TestTags":      {"tag1,tag2"},
 		"StatusCodes":   {"500"},
 		"UseJar":        {"0"},
+		"PostRaw":       {""},
 	}
 
 	assert.Equal(expected, test.ToURLValues())

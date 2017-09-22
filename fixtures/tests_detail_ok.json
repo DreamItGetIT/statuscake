@@ -26,5 +26,6 @@
   "ProcessingState": "Pretest",
   "ProcessingOn": "dalas.localdomain",
   "DownTimes": "0",
-  "UseJar": false
+  "UseJar": false,
+  "PostRaw": ""
 }
