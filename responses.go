@@ -1,5 +1,9 @@
 package statuscake
 
+import (
+	"strings"
+)
+
 type autheticationErrorResponse struct {
 	ErrNo int
 	Error string
@@ -47,6 +51,7 @@ type detailResponse struct {
 	TriggerRate     int      `json:"TriggerRate,string"`
 	UseJar          bool     `json:"UseJar"`
 	PostRaw         string   `json:"PostRaw"`
+	StatusCodes     []string `json:"StatusCodes"`
 }
 
 func (d *detailResponse) test() *Test {
@@ -72,5 +77,6 @@ func (d *detailResponse) test() *Test {
 		TriggerRate:   d.TriggerRate,
 		UseJar:        d.UseJar,
 		PostRaw:       d.PostRaw,
+		StatusCodes:   strings.Join(d.StatusCodes[:],", "),
 	}
 }
