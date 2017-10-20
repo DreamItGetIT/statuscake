@@ -77,6 +77,6 @@ func (d *detailResponse) test() *Test {
 		TriggerRate:   d.TriggerRate,
 		UseJar:        d.UseJar,
 		PostRaw:       d.PostRaw,
-		StatusCodes:   strings.Join(d.StatusCodes[:],", "),
+		StatusCodes:   strings.Join(d.StatusCodes[:],","),
 	}
 }
