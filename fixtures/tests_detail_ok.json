@@ -27,5 +27,6 @@
   "ProcessingOn": "dalas.localdomain",
   "DownTimes": "0",
   "UseJar": false,
-  "PostRaw": ""
+  "PostRaw": "",
+  "FinalEndpoint": ""
 }

@@ -51,6 +51,7 @@ type detailResponse struct {
 	TriggerRate     int      `json:"TriggerRate,string"`
 	UseJar          bool     `json:"UseJar"`
 	PostRaw         string   `json:"PostRaw"`
+	FinalEndpoint   string   `json:"FinalEndpoint"`
 	StatusCodes     []string `json:"StatusCodes"`
 }
 
@@ -77,6 +78,7 @@ func (d *detailResponse) test() *Test {
 		TriggerRate:   d.TriggerRate,
 		UseJar:        d.UseJar,
 		PostRaw:       d.PostRaw,
-		StatusCodes:   strings.Join(d.StatusCodes[:],","),
+		FinalEndpoint: d.FinalEndpoint,
+		StatusCodes:   strings.Join(d.StatusCodes[:], ","),
 	}
 }

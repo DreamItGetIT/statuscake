@@ -100,6 +100,9 @@ type Test struct {
 
 	// Raw POST data seperated by an ampersand
 	PostRaw string `json:"PostRaw" querystring:"PostRaw"`
+
+	// Use to specify the expected Final URL in the testing process
+	FinalEndpoint string `json:"FinalEndpoint" querystring:"FinalEndpoint"`
 }
 
 // Validate checks if the Test is valid. If it's invalid, it returns a ValidationError with all invalid fields. It returns nil otherwise.
@@ -148,6 +151,10 @@ func (t *Test) Validate() error {
 
 	if t.PostRaw != "" && t.TestType != "HTTP" {
 		e["PostRaw"] = "must be HTTP to submit a POST request"
+	}
+
+	if t.FinalEndpoint != "" && t.TestType != "HTTP" {
+		e["FinalEndpoint"] = "must be a Valid URL"
 	}
 	var jsonVerifiable map[string]interface{}
 	if json.Unmarshal([]byte(t.CustomHeader), &jsonVerifiable) != nil {
