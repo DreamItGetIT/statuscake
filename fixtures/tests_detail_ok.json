@@ -4,6 +4,7 @@
   "Paused": false,
   "WebsiteName": "NL",
   "CustomHeader": "{\"some\":{\"json\": [\"value\"]}}",
+  "UserAgent": "product/version (comment)",
   "ContactGroup": "StatusCake Alerts",
   "ContactID": 536,
   "Status": "Up",

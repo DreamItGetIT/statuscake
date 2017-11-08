@@ -289,6 +289,7 @@ func TestTests_Detail_OK(t *testing.T) {
 	assert.Equal(test.Paused, false)
 	assert.Equal(test.WebsiteName, "NL")
 	assert.Equal(test.CustomHeader, `{"some":{"json": ["value"]}}`)
+	assert.Equal(test.UserAgent, "product/version (comment)")
 	assert.Equal(test.ContactID, 536)
 	assert.Equal(test.Status, "Up")
 	assert.Equal(test.Uptime, 0.0)

@@ -24,6 +24,9 @@ type Test struct {
 	// CustomHeader. A special header that will be sent along with the HTTP tests.
 	CustomHeader string `json:"CustomHeader" querystring:"CustomHeader"`
 
+	// Use to populate the test with a custom user agent
+	UserAgent string `json:"UserAgent" queryString:"UserAgent"`
+
 	// Test location, either an IP (for TCP and Ping) or a fully qualified URL for other TestTypes
 	WebsiteURL string `json:"WebsiteURL" querystring:"WebsiteURL"`
 
