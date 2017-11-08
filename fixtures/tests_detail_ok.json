@@ -28,5 +28,6 @@
   "DownTimes": "0",
   "UseJar": false,
   "PostRaw": "",
-  "FinalEndpoint": ""
+  "FinalEndpoint": "",
+  "FollowRedirect": 0
 }

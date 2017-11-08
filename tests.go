@@ -103,6 +103,9 @@ type Test struct {
 
 	// Use to specify the expected Final URL in the testing process
 	FinalEndpoint string `json:"FinalEndpoint" querystring:"FinalEndpoint"`
+
+	// Use to specify whether redirects should be followed
+	FollowRedirect int `json:"FollowRedirect" querystring:"FollowRedirect"`
 }
 
 // Validate checks if the Test is valid. If it's invalid, it returns a ValidationError with all invalid fields. It returns nil otherwise.
@@ -155,6 +158,10 @@ func (t *Test) Validate() error {
 
 	if t.FinalEndpoint != "" && t.TestType != "HTTP" {
 		e["FinalEndpoint"] = "must be a Valid URL"
+	}
+
+	if t.FollowRedirect < 0 || t.FollowRedirect > 1 {
+		e["FollowRedirect"] = "must be 0 or 1"
 	}
 	var jsonVerifiable map[string]interface{}
 	if json.Unmarshal([]byte(t.CustomHeader), &jsonVerifiable) != nil {
