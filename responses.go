@@ -32,6 +32,7 @@ type detailResponse struct {
 	Status          string   `json:"Status"`
 	Uptime          float64  `json:"Uptime"`
 	CustomHeader    string   `json:"CustomHeader"`
+	UserAgent       string   `json:"UserAgent"`
 	CheckRate       int      `json:"CheckRate"`
 	Timeout         int      `json:"Timeout"`
 	LogoImage       string   `json:"LogoImage"`
@@ -52,33 +53,36 @@ type detailResponse struct {
 	UseJar          bool     `json:"UseJar"`
 	PostRaw         string   `json:"PostRaw"`
 	FinalEndpoint   string   `json:"FinalEndpoint"`
+	FollowRedirect  int      `json:"FollowRedirect"`
 	StatusCodes     []string `json:"StatusCodes"`
 }
 
 func (d *detailResponse) test() *Test {
 	return &Test{
-		TestID:        d.TestID,
-		TestType:      d.TestType,
-		Paused:        d.Paused,
-		WebsiteName:   d.WebsiteName,
-		WebsiteURL:    d.URI,
-		CustomHeader:  d.CustomHeader,
-		ContactID:     d.ContactID,
-		Status:        d.Status,
-		Uptime:        d.Uptime,
-		CheckRate:     d.CheckRate,
-		Timeout:       d.Timeout,
-		LogoImage:     d.LogoImage,
-		Confirmation:  d.Confirmation,
-		WebsiteHost:   d.WebsiteHost,
-		NodeLocations: d.NodeLocations,
-		FindString:    d.FindString,
-		DoNotFind:     d.DoNotFind,
-		Port:          d.Port,
-		TriggerRate:   d.TriggerRate,
-		UseJar:        d.UseJar,
-		PostRaw:       d.PostRaw,
-		FinalEndpoint: d.FinalEndpoint,
-		StatusCodes:   strings.Join(d.StatusCodes[:], ","),
+		TestID:         d.TestID,
+		TestType:       d.TestType,
+		Paused:         d.Paused,
+		WebsiteName:    d.WebsiteName,
+		WebsiteURL:     d.URI,
+		CustomHeader:   d.CustomHeader,
+		UserAgent:      d.UserAgent,
+		ContactID:      d.ContactID,
+		Status:         d.Status,
+		Uptime:         d.Uptime,
+		CheckRate:      d.CheckRate,
+		Timeout:        d.Timeout,
+		LogoImage:      d.LogoImage,
+		Confirmation:   d.Confirmation,
+		WebsiteHost:    d.WebsiteHost,
+		NodeLocations:  d.NodeLocations,
+		FindString:     d.FindString,
+		DoNotFind:      d.DoNotFind,
+		Port:           d.Port,
+		TriggerRate:    d.TriggerRate,
+		UseJar:         d.UseJar,
+		PostRaw:        d.PostRaw,
+		FinalEndpoint:  d.FinalEndpoint,
+		FollowRedirect: d.FollowRedirect,
+		StatusCodes:    strings.Join(d.StatusCodes[:], ","),
 	}
 }
