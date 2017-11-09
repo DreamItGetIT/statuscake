@@ -30,5 +30,5 @@
   "UseJar": false,
   "PostRaw": "",
   "FinalEndpoint": "",
-  "FollowRedirect": 0
+  "FollowRedirect": false
 }
