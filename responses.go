@@ -53,7 +53,7 @@ type detailResponse struct {
 	UseJar          bool     `json:"UseJar"`
 	PostRaw         string   `json:"PostRaw"`
 	FinalEndpoint   string   `json:"FinalEndpoint"`
-	FollowRedirect  int      `json:"FollowRedirect"`
+	FollowRedirect  bool     `json:"FollowRedirect"`
 	StatusCodes     []string `json:"StatusCodes"`
 }
 
