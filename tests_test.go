@@ -88,7 +88,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		TestType:       "HTTP",
 		RealBrowser:    1,
 		TriggerRate:    50,
-		TestTags:       "tag1,tag2",
+		TestTags:       []string{"tag1", "tag2"},
 		StatusCodes:    "500",
 		FollowRedirect: false,
 	}
@@ -157,6 +157,7 @@ func TestTests_All(t *testing.T) {
 		ContactID:   1,
 		Status:      "Up",
 		Uptime:      100,
+		TestTags:    []string{"tag1", "tag2"},
 	}
 	assert.Equal(expectedTest, tests[0])
 
@@ -168,6 +169,7 @@ func TestTests_All(t *testing.T) {
 		ContactID:   2,
 		Status:      "Down",
 		Uptime:      0,
+		TestTags:    []string{"tag3", "tag4"},
 	}
 	assert.Equal(expectedTest, tests[1])
 }
