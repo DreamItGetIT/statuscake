@@ -88,7 +88,8 @@ func TestTest_ToURLValues(t *testing.T) {
 		TestType:       "HTTP",
 		RealBrowser:    1,
 		TriggerRate:    50,
-		TestTags:       []string{"tag1", "tag2"},
+		TestTags:       "tag1,tag2",
+		Tags:           []string{"tag1", "tag2"},
 		StatusCodes:    "500",
 		FollowRedirect: false,
 	}
@@ -118,6 +119,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		"RealBrowser":    {"1"},
 		"TriggerRate":    {"50"},
 		"TestTags":       {"tag1,tag2"},
+		"Tags":           {"tag1,tag2"},
 		"StatusCodes":    {"500"},
 		"UseJar":         {"0"},
 		"PostRaw":        {""},
@@ -157,7 +159,8 @@ func TestTests_All(t *testing.T) {
 		ContactID:   1,
 		Status:      "Up",
 		Uptime:      100,
-		TestTags:    []string{"tag1", "tag2"},
+		TestTags:    "tag1,tag2",
+		Tags:        []string{"tag1", "tag2"},
 	}
 	assert.Equal(expectedTest, tests[0])
 
@@ -169,7 +172,8 @@ func TestTests_All(t *testing.T) {
 		ContactID:   2,
 		Status:      "Down",
 		Uptime:      0,
-		TestTags:    []string{"tag3", "tag4"},
+		TestTags:    "tag3,tag4",
+		Tags:        []string{"tag3", "tag4"},
 	}
 	assert.Equal(expectedTest, tests[1])
 }

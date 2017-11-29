@@ -93,7 +93,10 @@ type Test struct {
 	TriggerRate int `json:"TriggerRate" querystring:"TriggerRate"`
 
 	// Tags should be seperated by a comma - no spacing between tags (this,is,a set,of,tags)
-	TestTags []string `json:"TestTags" querystring:"TestTags"`
+	TestTags string `json:"TestTags" querystring:"TestTags"`
+
+	// Reading existing tags from the API yields the comma separated TestTags as an array.
+	Tags []string `json:"Tags" querystring:"Tags"`
 
 	// Comma Seperated List of StatusCodes to Trigger Error on (on Update will replace, so send full list each time)
 	StatusCodes string `json:"StatusCodes" querystring:"StatusCodes"`
