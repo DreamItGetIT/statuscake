@@ -77,6 +77,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		PingURL:        "http://example.com/ping",
 		Confirmation:   1,
 		CheckRate:      500,
+    ContactID:      "1,2",
 		BasicUser:      "myuser",
 		BasicPass:      "mypass",
 		Public:         1,
@@ -104,7 +105,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		"Timeout":        {"11"},
 		"PingURL":        {"http://example.com/ping"},
 		"Confirmation":   {"1"},
-		"ContactGroup":   {"0"}, //defaults to 0 when not provided
+		"ContactGroup":   {"1,2"},
 		"CheckRate":      {"500"},
 		"BasicUser":      {"myuser"},
 		"BasicPass":      {"mypass"},
