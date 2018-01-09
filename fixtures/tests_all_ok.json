@@ -5,7 +5,7 @@
       "TestType": "HTTP",
       "WebsiteName": "www 1",
       "ContactGroup": null,
-      "ContactID": 1,
+      "ContactID": "1",
       "Status": "Up",
       "Uptime": 100
   },
@@ -15,7 +15,7 @@
       "TestType": "HTTP",
       "WebsiteName": "www 2",
       "ContactGroup": null,
-      "ContactID": 2,
+      "ContactID": "2",
       "Status": "Down",
       "Uptime": 0
   }

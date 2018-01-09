@@ -77,6 +77,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		PingURL:        "http://example.com/ping",
 		Confirmation:   1,
 		CheckRate:      500,
+		ContactID:      "1,2",
 		BasicUser:      "myuser",
 		BasicPass:      "mypass",
 		Public:         1,
@@ -104,7 +105,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		"Timeout":        {"11"},
 		"PingURL":        {"http://example.com/ping"},
 		"Confirmation":   {"1"},
-		"ContactGroup":   {"0"}, //defaults to 0 when not provided
+		"ContactGroup":   {"1,2"},
 		"CheckRate":      {"500"},
 		"BasicUser":      {"myuser"},
 		"BasicPass":      {"mypass"},
@@ -154,7 +155,7 @@ func TestTests_All(t *testing.T) {
 		Paused:      false,
 		TestType:    "HTTP",
 		WebsiteName: "www 1",
-		ContactID:   1,
+		ContactID:   "1",
 		Status:      "Up",
 		Uptime:      100,
 	}
@@ -165,7 +166,7 @@ func TestTests_All(t *testing.T) {
 		Paused:      true,
 		TestType:    "HTTP",
 		WebsiteName: "www 2",
-		ContactID:   2,
+		ContactID:   "2",
 		Status:      "Down",
 		Uptime:      0,
 	}
@@ -291,7 +292,7 @@ func TestTests_Detail_OK(t *testing.T) {
 	assert.Equal(test.WebsiteName, "NL")
 	assert.Equal(test.CustomHeader, `{"some":{"json": ["value"]}}`)
 	assert.Equal(test.UserAgent, "product/version (comment)")
-	assert.Equal(test.ContactID, 536)
+	assert.Equal(test.ContactID, "536")
 	assert.Equal(test.Status, "Up")
 	assert.Equal(test.Uptime, 0.0)
 	assert.Equal(test.CheckRate, 60)
