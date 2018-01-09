@@ -77,7 +77,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		PingURL:        "http://example.com/ping",
 		Confirmation:   1,
 		CheckRate:      500,
-    ContactID:      "1,2",
+		ContactID:      "1,2",
 		BasicUser:      "myuser",
 		BasicPass:      "mypass",
 		Public:         1,
