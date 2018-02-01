@@ -50,6 +50,9 @@ func (e *updateError) Error() string {
 			m := fmt.Sprint(v)
 			messages = append(messages, m)
 		}
+	} else if issue, ok := e.Issues.(interface{}); ok {
+		m := fmt.Sprint(issue)
+		messages = append(messages, m)
 	}
 
 	return strings.Join(messages, ", ")
