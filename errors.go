@@ -34,11 +34,14 @@ func (e ValidationError) Error() string {
 }
 
 type updateError struct {
-	Issues interface{}
+	Issues  interface{}
+	Message string
 }
 
 func (e *updateError) Error() string {
 	var messages []string
+
+	messages = append(messages, e.Message)
 
 	if issues, ok := e.Issues.(map[string]interface{}); ok {
 		for k, v := range issues {
