@@ -235,7 +235,7 @@ func TestTests_Update_ErrorWithSliceOfIssues(t *testing.T) {
 
 	require.NotNil(err)
 	assert.IsType(&updateError{}, err)
-	assert.Equal("hello, world", err.Error())
+	assert.Equal("Required Data is Missing., hello, world", err.Error())
 }
 
 func TestTests_Delete_OK(t *testing.T) {
