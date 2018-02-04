@@ -5,6 +5,8 @@
       "TestType": "HTTP",
       "WebsiteName": "www 1",
       "ContactGroup": null,
+      "TestTags": "tag1,tag2",
+      "Tags": ["tag1","tag2"],
       "ContactID": 1,
       "Status": "Up",
       "Uptime": 100
@@ -15,6 +17,8 @@
       "TestType": "HTTP",
       "WebsiteName": "www 2",
       "ContactGroup": null,
+      "TestTags": "tag3,tag4",
+      "Tags": ["tag3","tag4"],
       "ContactID": 2,
       "Status": "Down",
       "Uptime": 0
