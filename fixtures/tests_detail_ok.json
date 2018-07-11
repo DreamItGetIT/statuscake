@@ -14,10 +14,8 @@
   "LogoImage": "",
   "WebsiteHost": "Various",
   "NodeLocations": [
-    "UK",
-    "JP",
-    "SG1",
-    "SLC"
+    "foo",
+    "bar"
   ],
   "FindString": "",
   "DoNotFind": false,
