@@ -67,6 +67,7 @@ func cmdList(c *statuscake.Client, args ...string) error {
 		fmt.Printf("  Paused: %s\n", paused)
 		fmt.Printf("  ContactID: %d\n", t.ContactID)
 		fmt.Printf("  Uptime: %f\n", t.Uptime)
+		fmt.Printf("  NodeLocations: %s\n", t.NodeLocations)
 	}
 
 	return nil
@@ -103,6 +104,7 @@ func cmdDetail(c *statuscake.Client, args ...string) error {
 	fmt.Printf("  Paused: %s\n", paused)
 	fmt.Printf("  ContactID: %d\n", t.ContactID)
 	fmt.Printf("  Uptime: %f\n", t.Uptime)
+	fmt.Printf("  NodeLocations: %s\n", t.NodeLocations)
 
 	return nil
 }
@@ -144,10 +146,11 @@ func askInt(name string) int {
 
 func cmdCreate(c *statuscake.Client, args ...string) error {
 	t := &statuscake.Test{
-		WebsiteName: askString("WebsiteName"),
-		WebsiteURL:  askString("WebsiteURL"),
-		TestType:    askString("TestType"),
-		CheckRate:   askInt("CheckRate"),
+		WebsiteName:    askString("WebsiteName"),
+		WebsiteURL:     askString("WebsiteURL"),
+		TestType:       askString("TestType"),
+		CheckRate:      askInt("CheckRate"),
+		NodeLocations:  askString("NodeLocations"),
 	}
 
 	t2, err := c.Tests().Update(t)
@@ -181,6 +184,7 @@ func cmdUpdate(c *statuscake.Client, args ...string) error {
 	t.WebsiteURL = askString(fmt.Sprintf("WebsiteURL [%s]", t.WebsiteURL))
 	t.TestType = askString(fmt.Sprintf("TestType [%s]", t.TestType))
 	t.CheckRate = askInt(fmt.Sprintf("CheckRate [%d]", t.CheckRate))
+	t.NodeLocations = askString(fmt.Sprintf("NodeLocations [%s]", t.NodeLocations))
 
 	t2, err := c.Tests().Update(t)
 	if err != nil {
