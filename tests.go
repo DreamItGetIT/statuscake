@@ -6,7 +6,6 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
-	"regexp"
 )
 
 const queryStringTag = "querystring"
@@ -44,7 +43,7 @@ type Test struct {
 	Uptime float64 `json:"Uptime"`
 
 	// Any test locations seperated by a comma (using the Node Location IDs)
-	NodeLocations string `json:"NodeLocations" querystring:"NodeLocations"`
+	NodeLocations []string `json:"NodeLocations" querystring:"NodeLocations"`
 
 	// Timeout in an int form representing seconds.
 	Timeout int `json:"Timeout" querystring:"Timeout"`
@@ -167,17 +166,6 @@ func (t *Test) Validate() error {
 	var jsonVerifiable map[string]interface{}
 	if json.Unmarshal([]byte(t.CustomHeader), &jsonVerifiable) != nil {
 		e["CustomHeader"] = "must be provided as json string"
-	}
-
-	match, err := regexp.MatchString("^([0-9A-Za-z]*[,][[:space:]]*)*[0-9A-Za-z]+$", t.NodeLocations)
-
-	if err != nil {
-		fmt.Printf("There is a problem with regexp. This is an upstream problem.\n")
-		return nil
-	}
-
-	if match != true {
-		e["NodeLocations"] = "must be test locastion IDs separated by a comma"
 	}
 
 	if len(e) > 0 {

@@ -8,7 +8,7 @@
       "ContactID": 1,
       "Status": "Up",
       "Uptime": 100,
-      "NodeLocations": "foo,bar"
+      "NodeLocations": ["foo", "bar"]
   },
   {
       "TestID": 101,
@@ -19,6 +19,6 @@
       "ContactID": 2,
       "Status": "Down",
       "Uptime": 0,
-      "NodeLocations": "foo"
+      "NodeLocations": ["foo"]
   }
 ]

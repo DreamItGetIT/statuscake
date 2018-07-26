@@ -74,7 +74,7 @@ func (d *detailResponse) test() *Test {
 		LogoImage:      d.LogoImage,
 		Confirmation:   d.Confirmation,
 		WebsiteHost:    d.WebsiteHost,
-		NodeLocations:  strings.Join(d.NodeLocations, ","),
+		NodeLocations:  d.NodeLocations,
 		FindString:     d.FindString,
 		DoNotFind:      d.DoNotFind,
 		Port:           d.Port,
