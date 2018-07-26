@@ -91,7 +91,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		TestType:       "HTTP",
 		RealBrowser:    1,
 		TriggerRate:    50,
-		TestTags:       "tag1,tag2",
+		TestTags:       []string{"tag1", "tag2"},
 		StatusCodes:    "500",
 		FollowRedirect: false,
 	}
