@@ -12,7 +12,7 @@ const queryStringTag = "querystring"
 
 // Test represents a statuscake Test
 type Test struct {
-	// ThiTestID is an int, use this to get more details about this test. If not provided will insert a new check, else will update
+	// TestID is an int, use this to get more details about this test. If not provided will insert a new check, else will update
 	TestID int `json:"TestID" querystring:"TestID" querystringoptions:"omitempty"`
 
 	// Sent tfalse To Unpause and true To Pause.
