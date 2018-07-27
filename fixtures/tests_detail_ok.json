@@ -5,7 +5,13 @@
   "WebsiteName": "NL",
   "CustomHeader": "{\"some\":{\"json\": [\"value\"]}}",
   "UserAgent": "product/version (comment)",
-  "ContactGroup": "StatusCake Alerts",
+  "ContactGroups": [
+    {
+    "ID": 536,
+    "Name": "Dummy ContactGroup",
+    "Email": "github-dreamitgetit-statuscake@maildrop.cc"
+    }
+  ],
   "ContactID": 536,
   "Status": "Up",
   "Uptime": 0,

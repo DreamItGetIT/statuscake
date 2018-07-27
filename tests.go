@@ -33,8 +33,11 @@ type Test struct {
 	// A Port to use on TCP Tests
 	Port int `json:"Port" querystring:"Port"`
 
-	// Contact group ID - will return int of contact group used else 0
-	ContactID int `json:"ContactID" querystring:"ContactGroup"`
+	// Contact group ID - deprecated in favor of ContactGroup but still provided in the API detail response
+	ContactID int `json:"ContactID"`
+
+	// Contact group IDs - will return list of ints or empty if not provided
+	ContactGroup []string `json:"ContactGroup" querystring:"ContactGroup"`
 
 	// Current status at last test
 	Status string `json:"Status"`

@@ -4,8 +4,7 @@
       "Paused": false,
       "TestType": "HTTP",
       "WebsiteName": "www 1",
-      "ContactGroup": null,
-      "ContactID": 1,
+      "ContactGroup": ["1"],
       "Status": "Up",
       "Uptime": 100,
       "NodeLocations": ["foo", "bar"]
@@ -15,8 +14,7 @@
       "Paused": true,
       "TestType": "HTTP",
       "WebsiteName": "www 2",
-      "ContactGroup": null,
-      "ContactID": 2,
+      "ContactGroup": ["2"],
       "Status": "Down",
       "Uptime": 0,
       "NodeLocations": ["foo"]
