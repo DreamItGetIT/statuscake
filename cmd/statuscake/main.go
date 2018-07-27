@@ -68,7 +68,6 @@ func cmdList(c *statuscake.Client, args ...string) error {
 		fmt.Printf("  Paused: %s\n", paused)
 		fmt.Printf("  ContactID: %d\n", t.ContactID)
 		fmt.Printf("  Uptime: %f\n", t.Uptime)
-		fmt.Printf("  NodeLocations: %s\n", strings.Join(t.NodeLocations,","))
 	}
 
 	return nil
@@ -105,7 +104,7 @@ func cmdDetail(c *statuscake.Client, args ...string) error {
 	fmt.Printf("  Paused: %s\n", paused)
 	fmt.Printf("  ContactID: %d\n", t.ContactID)
 	fmt.Printf("  Uptime: %f\n", t.Uptime)
-	fmt.Printf("  NodeLocations: %s\n", strings.Join(t.NodeLocations,", "))
+	fmt.Printf("  NodeLocations: %s\n", fmt.Sprint(t.NodeLocations))
 
 	return nil
 }
