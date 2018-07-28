@@ -17,18 +17,17 @@ func TestTest_Validate(t *testing.T) {
 	require := require.New(t)
 
 	test := &Test{
-		Timeout:       200,
-		Confirmation:  100,
-		Public:        200,
-		Virus:         200,
-		TestType:      "FTP",
-		RealBrowser:   100,
-		TriggerRate:   100,
-		CheckRate:     100000,
-		CustomHeader:  "here be dragons",
-		WebsiteName:   "",
-		WebsiteURL:    "",
-		NodeLocations: "foo.bar",
+		Timeout:      200,
+		Confirmation: 100,
+		Public:       200,
+		Virus:        200,
+		TestType:     "FTP",
+		RealBrowser:  100,
+		TriggerRate:  100,
+		CheckRate:    100000,
+		CustomHeader: "here be dragons",
+		WebsiteName:  "",
+		WebsiteURL:   "",
 	}
 
 	err := test.Validate()
@@ -46,7 +45,6 @@ func TestTest_Validate(t *testing.T) {
 	assert.Contains(message, "RealBrowser must be 0 or 1")
 	assert.Contains(message, "TriggerRate must be between 0 and 59")
 	assert.Contains(message, "CustomHeader must be provided as json string")
-	assert.Contains(message, "NodeLocations must be test locastion IDs separated by a comma")
 
 	test.Timeout = 10
 	test.Confirmation = 2
@@ -59,7 +57,7 @@ func TestTest_Validate(t *testing.T) {
 	test.WebsiteName = "Foo"
 	test.WebsiteURL = "http://example.com"
 	test.CustomHeader = `{"test": 15}`
-	test.NodeLocations = "foo,bar"
+	test.NodeLocations = []string{"foo", "bar"}
 
 	err = test.Validate()
 	assert.Nil(err)
@@ -75,7 +73,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		CustomHeader:   `{"some":{"json": ["value"]}}`,
 		WebsiteURL:     "http://example.com",
 		Port:           3000,
-		NodeLocations:  "foo,bar",
+		NodeLocations:  []string{"foo", "bar"},
 		Timeout:        11,
 		PingURL:        "http://example.com/ping",
 		Confirmation:   1,
@@ -91,7 +89,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		TestType:       "HTTP",
 		RealBrowser:    1,
 		TriggerRate:    50,
-		TestTags:       "tag1,tag2",
+		TestTags:       []string{"tag1", "tag2"},
 		StatusCodes:    "500",
 		FollowRedirect: false,
 	}
@@ -106,8 +104,8 @@ func TestTest_ToURLValues(t *testing.T) {
 		"NodeLocations":  {"foo,bar"},
 		"Timeout":        {"11"},
 		"PingURL":        {"http://example.com/ping"},
+		"ContactGroup":   {""},
 		"Confirmation":   {"1"},
-		"ContactGroup":   {"0"}, //defaults to 0 when not provided
 		"CheckRate":      {"500"},
 		"BasicUser":      {"myuser"},
 		"BasicPass":      {"mypass"},
@@ -157,22 +155,22 @@ func TestTests_All(t *testing.T) {
 		Paused:        false,
 		TestType:      "HTTP",
 		WebsiteName:   "www 1",
-		ContactID:     1,
+		ContactGroup:  []string{"1"},
 		Status:        "Up",
 		Uptime:        100,
-		NodeLocations: "foo,bar",
+		NodeLocations: []string{"foo", "bar"},
 	}
 	assert.Equal(expectedTest, tests[0])
 
 	expectedTest = &Test{
-		TestID:      101,
-		Paused:      true,
-		TestType:    "HTTP",
-		WebsiteName: "www 2",
-		ContactID:   2,
-		Status:      "Down",
-		Uptime:      0,
-		NodeLocations: "foo",
+		TestID:        101,
+		Paused:        true,
+		TestType:      "HTTP",
+		WebsiteName:   "www 2",
+		ContactGroup:  []string{"2"},
+		Status:        "Down",
+		Uptime:        0,
+		NodeLocations: []string{"foo"},
 	}
 	assert.Equal(expectedTest, tests[1])
 }
@@ -296,7 +294,7 @@ func TestTests_Detail_OK(t *testing.T) {
 	assert.Equal(test.WebsiteName, "NL")
 	assert.Equal(test.CustomHeader, `{"some":{"json": ["value"]}}`)
 	assert.Equal(test.UserAgent, "product/version (comment)")
-	assert.Equal(test.ContactID, 536)
+	assert.Equal(test.ContactGroup, []string{"536"})
 	assert.Equal(test.Status, "Up")
 	assert.Equal(test.Uptime, 0.0)
 	assert.Equal(test.CheckRate, 60)
@@ -305,7 +303,7 @@ func TestTests_Detail_OK(t *testing.T) {
 	assert.Equal(test.WebsiteHost, "Various")
 	assert.Equal(test.FindString, "")
 	assert.Equal(test.DoNotFind, false)
-	assert.Equal(test.NodeLocations, "foo,bar")
+	assert.Equal(test.NodeLocations, []string{"foo", "bar"})
 }
 
 type fakeAPIClient struct {

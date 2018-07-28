@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/DreamItGetIT/statuscake"
+	"strings"
 )
 
 var log *logpkg.Logger
@@ -65,9 +66,8 @@ func cmdList(c *statuscake.Client, args ...string) error {
 		fmt.Printf("  WebsiteName: %s\n", t.WebsiteName)
 		fmt.Printf("  TestType: %s\n", t.TestType)
 		fmt.Printf("  Paused: %s\n", paused)
-		fmt.Printf("  ContactID: %d\n", t.ContactID)
+		fmt.Printf("  ContactGroup: %s\n", fmt.Sprint(t.ContactGroup))
 		fmt.Printf("  Uptime: %f\n", t.Uptime)
-		fmt.Printf("  NodeLocations: %s\n", t.NodeLocations)
 	}
 
 	return nil
@@ -102,9 +102,9 @@ func cmdDetail(c *statuscake.Client, args ...string) error {
 	fmt.Printf("  PingURL: %s\n", t.PingURL)
 	fmt.Printf("  TestType: %s\n", t.TestType)
 	fmt.Printf("  Paused: %s\n", paused)
-	fmt.Printf("  ContactID: %d\n", t.ContactID)
+	fmt.Printf("  ContactGroup: %s\n", fmt.Sprint(t.ContactGroup))
 	fmt.Printf("  Uptime: %f\n", t.Uptime)
-	fmt.Printf("  NodeLocations: %s\n", t.NodeLocations)
+	fmt.Printf("  NodeLocations: %s\n", fmt.Sprint(t.NodeLocations))
 
 	return nil
 }
@@ -145,12 +145,22 @@ func askInt(name string) int {
 }
 
 func cmdCreate(c *statuscake.Client, args ...string) error {
+	websiteName := askString("WebsiteName")
+	websiteURL := askString("WebsiteURL")
+	testType := askString("TestType")
+	checkRate := askInt("CheckRate")
+	contactGroupString := askString("ContactGroup (comma separated list)")
+	contactGroup := strings.Split(contactGroupString, ",")
+	nodeLocationsString := askString("NodeLocations (comma separated list)")
+	nodeLocations := strings.Split(nodeLocationsString, ",")
+
 	t := &statuscake.Test{
-		WebsiteName:    askString("WebsiteName"),
-		WebsiteURL:     askString("WebsiteURL"),
-		TestType:       askString("TestType"),
-		CheckRate:      askInt("CheckRate"),
-		NodeLocations:  askString("NodeLocations"),
+		WebsiteName:   websiteName,
+		WebsiteURL:    websiteURL,
+		TestType:      testType,
+		CheckRate:     checkRate,
+		NodeLocations: nodeLocations,
+		ContactGroup:  contactGroup,
 	}
 
 	t2, err := c.Tests().Update(t)
@@ -184,7 +194,10 @@ func cmdUpdate(c *statuscake.Client, args ...string) error {
 	t.WebsiteURL = askString(fmt.Sprintf("WebsiteURL [%s]", t.WebsiteURL))
 	t.TestType = askString(fmt.Sprintf("TestType [%s]", t.TestType))
 	t.CheckRate = askInt(fmt.Sprintf("CheckRate [%d]", t.CheckRate))
-	t.NodeLocations = askString(fmt.Sprintf("NodeLocations [%s]", t.NodeLocations))
+	contactGroupString := askString("ContactGroup (comma separated list)")
+	t.ContactGroup = strings.Split(contactGroupString, ",")
+	nodeLocationsString := askString("NodeLocations (comma separated list)")
+	t.NodeLocations = strings.Split(nodeLocationsString, ",")
 
 	t2, err := c.Tests().Update(t)
 	if err != nil {

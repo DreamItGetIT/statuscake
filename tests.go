@@ -6,14 +6,13 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
-	"regexp"
 )
 
 const queryStringTag = "querystring"
 
 // Test represents a statuscake Test
 type Test struct {
-	// ThiTestID is an int, use this to get more details about this test. If not provided will insert a new check, else will update
+	// TestID is an int, use this to get more details about this test. If not provided will insert a new check, else will update
 	TestID int `json:"TestID" querystring:"TestID" querystringoptions:"omitempty"`
 
 	// Sent tfalse To Unpause and true To Pause.
@@ -34,8 +33,11 @@ type Test struct {
 	// A Port to use on TCP Tests
 	Port int `json:"Port" querystring:"Port"`
 
-	// Contact group ID - will return int of contact group used else 0
-	ContactID int `json:"ContactID" querystring:"ContactGroup"`
+	// Contact group ID - deprecated in favor of ContactGroup but still provided in the API detail response
+	ContactID int `json:"ContactID"`
+
+	// Contact group IDs - will return list of ints or empty if not provided
+	ContactGroup []string `json:"ContactGroup" querystring:"ContactGroup"`
 
 	// Current status at last test
 	Status string `json:"Status"`
@@ -44,7 +46,7 @@ type Test struct {
 	Uptime float64 `json:"Uptime"`
 
 	// Any test locations seperated by a comma (using the Node Location IDs)
-	NodeLocations string `json:"NodeLocations" querystring:"NodeLocations"`
+	NodeLocations []string `json:"NodeLocations" querystring:"NodeLocations"`
 
 	// Timeout in an int form representing seconds.
 	Timeout int `json:"Timeout" querystring:"Timeout"`
@@ -52,7 +54,7 @@ type Test struct {
 	// A URL to ping if a site goes down.
 	PingURL string `json:"PingURL" querystring:"PingURL"`
 
-	Confirmation int `json:"Confirmationi,string" querystring:"Confirmation"`
+	Confirmation int `json:"Confirmation,string" querystring:"Confirmation"`
 
 	// The number of seconds between checks.
 	CheckRate int `json:"CheckRate" querystring:"CheckRate"`
@@ -94,7 +96,7 @@ type Test struct {
 	TriggerRate int `json:"TriggerRate" querystring:"TriggerRate"`
 
 	// Tags should be seperated by a comma - no spacing between tags (this,is,a set,of,tags)
-	TestTags string `json:"TestTags" querystring:"TestTags"`
+	TestTags []string `json:"TestTags" querystring:"TestTags"`
 
 	// Comma Seperated List of StatusCodes to Trigger Error on (on Update will replace, so send full list each time)
 	StatusCodes string `json:"StatusCodes" querystring:"StatusCodes"`
@@ -167,17 +169,6 @@ func (t *Test) Validate() error {
 	var jsonVerifiable map[string]interface{}
 	if json.Unmarshal([]byte(t.CustomHeader), &jsonVerifiable) != nil {
 		e["CustomHeader"] = "must be provided as json string"
-	}
-
-	match, err := regexp.MatchString("^([0-9A-Za-z]*[,][[:space:]]*)*[0-9A-Za-z]+$", t.NodeLocations)
-
-	if err != nil {
-		fmt.Printf("There is a problem with regexp. This is an upstream problem.\n")
-		return nil
-	}
-
-	if match != true {
-		e["NodeLocations"] = "must be test locastion IDs separated by a comma"
 	}
 
 	if len(e) > 0 {
