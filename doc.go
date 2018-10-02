@@ -11,6 +11,13 @@
 //    log.Fatal(err)
 //  }
 //
+//  v := url.Values{}
+//  v.Set("tags", "test1,test2")
+//  testsWithFilter, err := c.Tests().AllWithFilter(v)
+//  if err != nil {
+//    log.Fatal(err)
+//  }
+//
 //  // delete a `Test`
 //  err = c.Tests().Delete(TestID)
 //
