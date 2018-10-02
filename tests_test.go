@@ -1,11 +1,15 @@
 package statuscake
 
 import (
+	"bytes"
+	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -171,8 +175,42 @@ func TestTests_All(t *testing.T) {
 		Status:        "Down",
 		Uptime:        0,
 		NodeLocations: []string{"foo"},
+		TestTags:  	   []string{"test1", "test2"},
 	}
 	assert.Equal(expectedTest, tests[1])
+}
+
+func TestTests_AllWithFilter(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := &fakeAPIClient{
+		fixture: "tests_all_ok.json",
+	}
+
+	v := url.Values{}
+	v.Set("tags", "test1,test2")
+	tt := newTests(c)
+	tests, err := tt.AllWithFilter(v)
+	require.Nil(err)
+
+	assert.Equal("/Tests", c.sentRequestPath)
+	assert.Equal("GET", c.sentRequestMethod)
+	assert.NotNil(c.sentRequestValues)
+	assert.Len(tests, 1)
+
+	expectedTest := &Test{
+		TestID:        101,
+		Paused:        true,
+		TestType:      "HTTP",
+		WebsiteName:   "www 2",
+		ContactGroup:  []string{"2"},
+		Status:        "Down",
+		Uptime:        0,
+		NodeLocations: []string{"foo"},
+		TestTags:  	   []string{"test1", "test2"},
+	}
+	assert.Equal(expectedTest, tests[0])
 }
 
 func TestTests_Update_OK(t *testing.T) {
@@ -336,8 +374,44 @@ func (c *fakeAPIClient) all(method string, path string, v url.Values) (*http.Res
 		log.Fatal(err)
 	}
 
-	resp := &http.Response{
-		Body: f,
+	var resp *http.Response
+	if len(c.sentRequestValues.Get("tags")) > 0 {
+		var storedResponses []Test
+		var returnResponses []Test
+		byteValue, _ := ioutil.ReadAll(f)
+		json.Unmarshal(byteValue, &storedResponses)
+		requestedTags := strings.Split(c.sentRequestValues.Get("tags"), ",")
+
+		for _, storedResponse := range storedResponses {
+			if len(requestedTags) > len(storedResponse.TestTags) { // if we are requesting more tags than whats stored then there are no matches
+				continue
+			}
+
+			match := true
+			for i, tag := range requestedTags {
+				if tag != storedResponse.TestTags[i] {
+					match = false
+				}
+			}
+
+			if match { // we can add it to the response now
+				returnResponses = append(returnResponses, storedResponse)
+			}
+		}
+
+		if len(returnResponses) == 0 {
+			return nil, nil
+		}
+
+		newByteValue, _ := json.Marshal(&returnResponses)
+		resp = &http.Response{
+			Body: ioutil.NopCloser(bytes.NewBuffer(newByteValue)),
+		}
+
+	} else {
+		resp = &http.Response{
+			Body: f,
+		}
 	}
 
 	return resp, nil

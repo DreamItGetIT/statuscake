@@ -244,6 +244,7 @@ func valueToQueryStringValue(v reflect.Value) string {
 // Tests is a client that implements the `Tests` API.
 type Tests interface {
 	All() ([]*Test, error)
+	AllWithFilter(url.Values) ([]*Test, error)
 	Detail(int) (*Test, error)
 	Update(*Test) (*Test, error)
 	Delete(TestID int) error
@@ -261,6 +262,19 @@ func newTests(c apiClient) Tests {
 
 func (tt *tests) All() ([]*Test, error) {
 	resp, err := tt.client.get("/Tests", nil)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var tests []*Test
+	err = json.NewDecoder(resp.Body).Decode(&tests)
+
+	return tests, err
+}
+
+func (tt *tests) AllWithFilter(filterOptions url.Values) ([]*Test, error) {
+	resp, err := tt.client.get("/Tests", filterOptions)
 	if err != nil {
 		return nil, err
 	}
