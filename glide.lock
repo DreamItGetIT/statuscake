@@ -1,0 +1,19 @@
+hash: 8da119a96f604975d907ca65ec2eb10b360a3240889cfde406c2636ef433b7cb
+updated: 2018-10-02T16:04:11.186094-05:00
+imports:
+- name: github.com/DreamItGetIT/statuscake
+  version: 85edefcbdaa39278c9db647d135d1dc8bccdad96
+testImports:
+- name: github.com/davecgh/go-spew
+  version: d8f796af33cc11cb798c1aaeb27a4ebc5099927d
+  subpackages:
+  - spew
+- name: github.com/pmezard/go-difflib
+  version: 792786c7400a136282c1664665ae0a8db921c6c2
+  subpackages:
+  - difflib
+- name: github.com/stretchr/testify
+  version: f35b8ab0b5a2cef36673838d662e249dd9c94686
+  subpackages:
+  - assert
+  - require

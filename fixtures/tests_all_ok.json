@@ -17,6 +17,7 @@
       "ContactGroup": ["2"],
       "Status": "Down",
       "Uptime": 0,
-      "NodeLocations": ["foo"]
+      "NodeLocations": ["foo"],
+      "TestTags": ["test1", "test2"]
   }
 ]
