@@ -75,7 +75,7 @@ type Test struct {
 	Branding int `json:"Branding" querystring:"Branding"`
 
 	// Used internally by the statuscake API
-	WebsiteHost string `json:"WebsiteHost"`
+	WebsiteHost string `json:"WebsiteHost" querystring:"WebsiteHost"`
 
 	// Enable virus checking or not. 1 to enable
 	Virus int `json:"Virus" querystring:"Virus"`
