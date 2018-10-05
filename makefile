@@ -10,4 +10,4 @@ test:
 	go test ${GOTEST_ARGS} ./...
 
 deps:
-	glide install
+	dep ensure

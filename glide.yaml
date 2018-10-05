@@ -1,8 +1,0 @@
-package: github.ibm.com/alchemy-containers/statuscake
-import:
-- package: github.com/DreamItGetIT/statuscake
-testImport:
-- package: github.com/stretchr/testify
-  subpackages:
-  - assert
-  - require
