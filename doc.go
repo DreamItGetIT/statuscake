@@ -32,7 +32,10 @@
 //    log.Fatal(err)
 //  }
 //
-//  t2 := c.Tests().Update(t)
+//  t2, err := c.Tests().Update(t)
+//  if err != nil {
+//    log.Fatal(err)
+//  }
 //  fmt.Printf("New Test created with id: %d\n", t2.TestID)
 //
 //  // get Tests details
