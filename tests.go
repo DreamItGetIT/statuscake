@@ -166,9 +166,11 @@ func (t *Test) Validate() error {
 		e["FinalEndpoint"] = "must be a Valid URL"
 	}
 
-	var jsonVerifiable map[string]interface{}
-	if json.Unmarshal([]byte(t.CustomHeader), &jsonVerifiable) != nil {
-		e["CustomHeader"] = "must be provided as json string"
+	if t.CustomHeader != "" {
+		var jsonVerifiable map[string]interface{}
+		if json.Unmarshal([]byte(t.CustomHeader), &jsonVerifiable) != nil {
+			e["CustomHeader"] = "must be provided as json string"
+		}
 	}
 
 	if len(e) > 0 {
