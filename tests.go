@@ -42,7 +42,7 @@ type Test struct {
 	// Current status at last test
 	Status string `json:"Status"`
 
-	// 7 Day Uptime
+	// 1 Day Uptime
 	Uptime float64 `json:"Uptime"`
 
 	// Any test locations seperated by a comma (using the Node Location IDs)
