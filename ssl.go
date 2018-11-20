@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+  "strconv"
 
 	"github.com/google/go-querystring/query"
 )
@@ -33,15 +34,30 @@ type Ssl struct {
 	LastUpdatedUtc string              `json:"last_updated_utc"`
 }
 
+type PartialSsl struct {
+  Id             int    `url:"id,omitempty"`
+  Domain         string `url:"domain,omitempty"         json:"domain"`
+  Checkrate      int    `url:"checkrate,omitempty"      json:"checkrate"`
+  ContactGroupsC string `url:"contact_groups,omitempty" json:"contact_groups"`
+  AlertAt        string `url:"alert_at,omitempty"       json:"alert_at"`
+  AlertExpiry    bool   `url:"alert_expiry,omitempty"   json:"alert_expiry"`
+  AlertReminder  bool   `url:"alert_reminder,omitempty" json:"alert_reminder"`
+  AlertBroken    bool   `url:"alert_broken,omitempty"   json:"alert_broken"`
+  AlertMixed     bool   `url:"alert_mixed,omitempty"    json:"alert_mixed"`
+}
+
 type sslUpdateResponse struct {
 	Success bool   `json:"Success"`
-	Message string `json:"Message"`
+	Message interface{} `json:"Message"`
+  Input PartialSsl `json:"Input"`
 }
 
 type Ssls interface {
 	All() ([]*Ssl, error)
+  completeSsl(*PartialSsl) (*Ssl, error)
 	Detail(string) (*Ssl, error)
-	Update(*Ssl) (*Ssl, error)
+	Update(*PartialSsl) (*Ssl, error)
+	UpdatePartial(*PartialSsl) (*PartialSsl, error)
 	Delete(ID string) error
 }
 
@@ -57,6 +73,27 @@ func findSsl(responses []*Ssl, id string) (*Ssl, error) {
 		}
 	}
 	return response, fmt.Errorf("%s Not found", id)
+}
+
+func stringVectToIntVect(input []string) ([]int) {
+  ret := make([]int,len(input))
+  for i := range input {
+    parsed, err := strconv.Atoi(input[i])
+    if err == nil {
+      ret[i] = parsed
+    }
+  }
+  return ret
+}
+
+func (tt *ssls) completeSsl(s *PartialSsl) (*Ssl, error) {
+  full, err := tt.Detail(fmt.Sprintf("%d",(*s).Id))
+  if err != nil {
+    return nil, err
+  }
+  (*full).Checkrate = (*s).Checkrate
+  (*full).ContactGroups = stringVectToIntVect(strings.Split((*s).ContactGroupsC,","))
+  return full, nil
 }
 
 type ssls struct {
@@ -99,8 +136,18 @@ func (tt *ssls) Detail(Id string) (*Ssl, error) {
 	return mySsl, nil
 }
 
-func (tt *ssls) Update(s *Ssl) (*Ssl, error) {
+func (tt *ssls) Update(s *PartialSsl) (*Ssl, error) {
+  var err error
+  s, err = tt.UpdatePartial(s)
+  if err!= nil {
+    return nil, err
+  }
+	return tt.completeSsl(s)
+}
+
+func (tt *ssls) UpdatePartial(s *PartialSsl) (*PartialSsl, error) {
 	v, _ := query.Values(*s)
+  Id := (*s).Id
 	raw_response, err := tt.client.put("/SSL/Update", v)
 	if err != nil {
 		return nil, fmt.Errorf("Error creating StatusCake Ssl: %s", err.Error())
@@ -112,9 +159,15 @@ func (tt *ssls) Update(s *Ssl) (*Ssl, error) {
 	}
 
 	if !updateResponse.Success {
-		return nil, fmt.Errorf("%s", updateResponse.Message)
+		return nil, fmt.Errorf("%s", updateResponse.Message.(string))
 	}
-	return tt.Detail(updateResponse.Message)
+  *s = updateResponse.Input
+  if Id == 0 {
+    (*s).Id = int(updateResponse.Message.(float64))
+  } else {
+    (*s).Id = Id
+  }
+  return s, nil
 }
 
 func (tt *ssls) Delete(id string) error {

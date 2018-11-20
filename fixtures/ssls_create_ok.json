@@ -1,7 +1,8 @@
 {
   "Success": true,
-  "Message": "",
+  "Message": 12345,
   "Input": {
+    "domain": "https://example.com",
     "checkrate": 86400,
     "contact_groups": "1000,2000",
     "alert_reminder": false,

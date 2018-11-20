@@ -98,3 +98,81 @@ func TestSsls_Detail_OK(t *testing.T) {
   assert.Equal(ssl.Domain, "https://google.com")
   assert.Equal(ssl.Id, "12345")
 }
+
+func TestSsls_UpdatePartialCreate_OK(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := &fakeAPIClient{
+		fixture: "ssls_create_ok.json",
+	}
+	tt := newSsls(c)
+  partial := &PartialSsl{
+    Domain: "https://example.com",
+  }
+  expectedRes := &PartialSsl {
+    Id: 12345,
+    Domain: "https://example.com",
+    Checkrate: 86400,
+    ContactGroupsC: "1000,2000",
+    AlertReminder: false,
+    AlertExpiry: false,
+    AlertBroken: false,
+    AlertAt: "59,60,61",
+  }
+  res, err := tt.UpdatePartial(partial)
+  require.Nil(err)
+  assert.Equal(expectedRes, res)
+}
+
+func TestSsls_UpdatePartial_OK(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := &fakeAPIClient{
+		fixture: "ssls_update_ok.json",
+	}
+	tt := newSsls(c)
+  partial := &PartialSsl{
+    Id: 12345,
+    Domain: "https://example.com",
+  }
+  expectedRes := &PartialSsl {
+    Id: 12345,
+    Checkrate: 86400,
+    ContactGroupsC: "1000,2000",
+    AlertReminder: false,
+    AlertExpiry: false,
+    AlertBroken: false,
+    AlertAt: "59,60,61",
+  }
+  res, err := tt.UpdatePartial(partial)
+  require.Nil(err)
+  assert.Equal(expectedRes, res)
+}
+func TestSsl_complete_OK(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := &fakeAPIClient{
+		fixture: "ssls_all_ok.json",
+	}
+	tt := newSsls(c)
+
+  partial := &PartialSsl {
+    Id: 12345,
+    Domain: "https://example.com",
+    Checkrate: 86400,
+    ContactGroupsC: "1000,2000",
+    AlertReminder: false,
+    AlertExpiry: false,
+    AlertBroken: false,
+    AlertAt: "59,60,61",
+  }
+  full, err := tt.completeSsl(partial)
+  require.Nil(err)
+  assert.Equal(full.Domain, "https://google.com")
+  assert.Equal(full.CipherScore, "100")
+  assert.Equal(full.Checkrate, 86400)
+  assert.Equal(full.ContactGroups, []int{1000, 2000})
+}
