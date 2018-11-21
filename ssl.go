@@ -34,22 +34,53 @@ type Ssl struct {
 	LastUpdatedUtc string              `json:"last_updated_utc"`
 }
 
+// ParialTest represent the a ssl test creation or modification
 type PartialSsl struct {
-  Id             int    `url:"id,omitempty"`
-  Domain         string `url:"domain,omitempty"         json:"domain"`
-  Checkrate      int    `url:"checkrate,omitempty"      json:"checkrate"`
-  ContactGroupsC string `url:"contact_groups,omitempty" json:"contact_groups"`
-  AlertAt        string `url:"alert_at,omitempty"       json:"alert_at"`
-  AlertExpiry    bool   `url:"alert_expiry,omitempty"   json:"alert_expiry"`
-  AlertReminder  bool   `url:"alert_reminder,omitempty" json:"alert_reminder"`
-  AlertBroken    bool   `url:"alert_broken,omitempty"   json:"alert_broken"`
-  AlertMixed     bool   `url:"alert_mixed,omitempty"    json:"alert_mixed"`
+  Id             int
+  Domain         string
+  Checkrate      int
+  ContactGroupsC string
+  AlertAt        string
+  AlertExpiry    bool
+  AlertReminder  bool
+  AlertBroken    bool
+  AlertMixed     bool
 }
+
+type createSsl struct {
+  Id             int    `url:"id"`
+  Domain         string `url:"domain"         json:"domain"`
+  Checkrate      int    `url:"checkrate"      json:"checkrate"`
+  ContactGroupsC string `url:"contact_groups" json:"contact_groups"`
+  AlertAt        string `url:"alert_at"       json:"alert_at"`
+  AlertExpiry    bool   `url:"alert_expiry"   json:"alert_expiry"`
+  AlertReminder  bool   `url:"alert_reminder" json:"alert_reminder"`
+  AlertBroken    bool   `url:"alert_broken"   json:"alert_broken"`
+  AlertMixed     bool   `url:"alert_mixed"    json:"alert_mixed"`
+}
+
+type updateSsl struct {
+  Id             int    `url:"id,omitempty"`
+  Domain         string `url:"domain,omitempty`
+  Checkrate      int    `url:"checkrate,omitempty`
+  ContactGroupsC string `url:"contact_groups,omitempty`
+  AlertAt        string `url:"alert_at,omitempty`
+  AlertExpiry    bool   `url:"alert_expiry,omitempty`
+  AlertReminder  bool   `url:"alert_reminder,omitempty`
+  AlertBroken    bool   `url:"alert_broken,omitempty`
+  AlertMixed     bool   `url:"alert_mixed,omitempty`
+}
+
 
 type sslUpdateResponse struct {
 	Success bool   `json:"Success"`
 	Message interface{} `json:"Message"`
-  Input PartialSsl `json:"Input"`
+}
+
+type sslCreateResponse struct {
+	Success bool   `json:"Success"`
+	Message interface{} `json:"Message"`
+  Input createSsl `json:"Input"`
 }
 
 type Ssls interface {
@@ -146,26 +177,41 @@ func (tt *ssls) Update(s *PartialSsl) (*Ssl, error) {
 }
 
 func (tt *ssls) UpdatePartial(s *PartialSsl) (*PartialSsl, error) {
-	v, _ := query.Values(*s)
+  var v url.Values
   Id := (*s).Id
+  isCreate := (Id == 0)
+  if isCreate {
+	  v, _ = query.Values(createSsl(*s))
+  } else {
+	  v, _ = query.Values(updateSsl(*s))
+  }
 	raw_response, err := tt.client.put("/SSL/Update", v)
 	if err != nil {
 		return nil, fmt.Errorf("Error creating StatusCake Ssl: %s", err.Error())
 	}
-	var updateResponse sslUpdateResponse
-	err = json.NewDecoder(raw_response.Body).Decode(&updateResponse)
-	if err != nil {
-		return nil, err
-	}
+  if isCreate {
+    var createResponse sslCreateResponse
+    err = json.NewDecoder(raw_response.Body).Decode(&createResponse)
+    if err != nil {
+      return nil, err
+    }
 
-	if !updateResponse.Success {
-		return nil, fmt.Errorf("%s", updateResponse.Message.(string))
-	}
-  *s = updateResponse.Input
-  if Id == 0 {
-    (*s).Id = int(updateResponse.Message.(float64))
+    if !createResponse.Success {
+      return nil, fmt.Errorf("%s", createResponse.Message.(string))
+    }
+    *s = PartialSsl(createResponse.Input)
+    (*s).Id = int(createResponse.Message.(float64))
+
   } else {
-    (*s).Id = Id
+    var updateResponse sslUpdateResponse
+    err = json.NewDecoder(raw_response.Body).Decode(&updateResponse)
+    if err != nil {
+      return nil, err
+    }
+
+    if !updateResponse.Success {
+      return nil, fmt.Errorf("%s", updateResponse.Message.(string))
+    }
   }
   return s, nil
 }

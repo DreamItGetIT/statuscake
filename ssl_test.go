@@ -135,16 +135,11 @@ func TestSsls_UpdatePartial_OK(t *testing.T) {
 	tt := newSsls(c)
   partial := &PartialSsl{
     Id: 12345,
-    Domain: "https://example.com",
+    AlertReminder: true,
   }
   expectedRes := &PartialSsl {
     Id: 12345,
-    Checkrate: 86400,
-    ContactGroupsC: "1000,2000",
-    AlertReminder: false,
-    AlertExpiry: false,
-    AlertBroken: false,
-    AlertAt: "59,60,61",
+    AlertReminder: true,
   }
   res, err := tt.UpdatePartial(partial)
   require.Nil(err)

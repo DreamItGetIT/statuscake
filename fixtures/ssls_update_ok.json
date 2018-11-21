@@ -1,12 +1,4 @@
 {
-  "Success": true,
-  "Message": "",
-  "Input": {
-    "checkrate": 86400,
-    "contact_groups": "1000,2000",
-    "alert_reminder": false,
-    "alert_expiry": false,
-    "alert_broken": false,
-    "alert_at": "59,60,61"
-  }
+    "Success": true,
+    "Message": "SSL test has been updated successfully"
 }
