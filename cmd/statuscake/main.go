@@ -6,8 +6,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/DreamItGetIT/statuscake"
 	"strings"
+
+	"github.com/manifoldco/statuscake"
 )
 
 var log *logpkg.Logger
