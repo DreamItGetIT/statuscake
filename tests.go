@@ -112,6 +112,9 @@ type Test struct {
 
 	// Use to specify whether redirects should be followed
 	FollowRedirect bool `json:"FollowRedirect" querystring:"FollowRedirect"`
+
+	// HTTP Tests only. If enabled, tests will send warnings if the SSL certificate is about to expire. Paid users only
+	EnableSSLAlert bool `json:"EnableSSLAlert" querystring:"EnableSSLAlert"`
 }
 
 // Validate checks if the Test is valid. If it's invalid, it returns a ValidationError with all invalid fields. It returns nil otherwise.

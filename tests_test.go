@@ -97,6 +97,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		TestTags:       []string{"tag1", "tag2"},
 		StatusCodes:    "500",
 		FollowRedirect: false,
+		EnableSSLAlert: true,
 	}
 
 	expected := url.Values{
@@ -130,6 +131,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		"PostRaw":        {""},
 		"FinalEndpoint":  {""},
 		"FollowRedirect": {"0"},
+		"EnableSSLAlert": {"1"},
 	}
 
 	assert.Equal(expected, test.ToURLValues())
@@ -177,7 +179,7 @@ func TestTests_All(t *testing.T) {
 		Status:        "Down",
 		Uptime:        0,
 		NodeLocations: []string{"foo"},
-		TestTags:  	   []string{"test1", "test2"},
+		TestTags:      []string{"test1", "test2"},
 	}
 	assert.Equal(expectedTest, tests[1])
 }
@@ -210,7 +212,7 @@ func TestTests_AllWithFilter(t *testing.T) {
 		Status:        "Down",
 		Uptime:        0,
 		NodeLocations: []string{"foo"},
-		TestTags:  	   []string{"test1", "test2"},
+		TestTags:      []string{"test1", "test2"},
 	}
 	assert.Equal(expectedTest, tests[0])
 }
