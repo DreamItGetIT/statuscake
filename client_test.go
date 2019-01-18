@@ -101,7 +101,38 @@ func TestClient_doRequest_WithHTTPErrors(t *testing.T) {
 
 	_, err = c.doRequest(req)
 	require.NotNil(err)
-	assert.IsType(&httpError{}, err)
+	httpErr, ok := err.(*HTTPError)
+	assert.True(ok)
+	assert.Equal(500, httpErr.StatusCode)
+	assert.Equal("", httpErr.Status)
+	assert.Equal("", httpErr.Message)
+	assert.Equal(0, httpErr.ErrorNo)
+}
+
+func TestClient_doRequest_WithHTTPErrorsMessage(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c, err := New(Auth{Username: "random-user", Apikey: "my-pass"})
+	require.Nil(err)
+
+	hc := &fakeHTTPClient{
+		StatusCode: 400,
+		Fixture:    "bad_request.json",
+	}
+	c.c = hc
+
+	req, err := http.NewRequest("GET", "http://example.com/test", nil)
+	require.Nil(err)
+
+	_, err = c.doRequest(req)
+	require.NotNil(err)
+	httpErr, ok := err.(*HTTPError)
+	assert.True(ok)
+	assert.Equal(400, httpErr.StatusCode)
+	assert.Equal("", httpErr.Status)
+	assert.Equal("Something bad happened.", httpErr.Message)
+	assert.Equal(42, httpErr.ErrorNo)
 }
 
 func TestClient_doRequest_HttpAuthenticationErrors(t *testing.T) {

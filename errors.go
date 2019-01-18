@@ -1,7 +1,10 @@
 package statuscake
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"strings"
 )
 
@@ -10,13 +13,50 @@ type APIError interface {
 	APIError() string
 }
 
-type httpError struct {
-	status     string
-	statusCode int
+// HTTPError represents a response returned from the StatusCake API which
+// contained an erronous status code.
+type HTTPError struct {
+	Status     string
+	StatusCode int
+	Message    string
+	ErrorNo    int
 }
 
-func (e *httpError) Error() string {
-	return fmt.Sprintf("HTTP error: %d - %s", e.statusCode, e.status)
+// HTTPErrorResponse represents the body content of an error response.
+type HTTPErrorResponse struct {
+	ErrorMessage string `json:"Error,omitempty"`
+	ErrorNo      int    `json:"ErrNo,omitempty"`
+}
+
+// NewHTTPError returns an HTTPError object from the given http.Response object.
+func NewHTTPError(r *http.Response) *HTTPError {
+	httpError := HTTPError{}
+
+	if r == nil {
+		return &httpError
+	}
+
+	// Set the status
+	httpError.Status = r.Status
+	httpError.StatusCode = r.StatusCode
+
+	// Attempt to read the body to find the error message.  Return if no body exists.
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return &httpError
+	}
+	var body HTTPErrorResponse
+	if err = json.Unmarshal(b, &body); err != nil {
+		return &httpError
+	}
+	httpError.Message = body.ErrorMessage
+	httpError.ErrorNo = body.ErrorNo
+
+	return &httpError
+}
+
+func (e *HTTPError) Error() string {
+	return fmt.Sprintf("HTTP error: %d - %s %s", e.StatusCode, e.Status, e.Message)
 }
 
 // ValidationError is a map where the key is the invalid field and the value is a message describing why the field is invalid.
