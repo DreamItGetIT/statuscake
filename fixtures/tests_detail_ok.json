@@ -34,5 +34,6 @@
   "UseJar": 0,
   "PostRaw": "",
   "FinalEndpoint": "",
+  "EnableSSLWarning": false,
   "FollowRedirect": false
 }

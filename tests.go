@@ -110,6 +110,9 @@ type Test struct {
 	// Use to specify the expected Final URL in the testing process
 	FinalEndpoint string `json:"FinalEndpoint" querystring:"FinalEndpoint"`
 
+	// Use to enable SSL validation
+	EnableSSLAlert bool `json:"EnableSSLAlert" querystring:"EnableSSLAlert"`
+
 	// Use to specify whether redirects should be followed
 	FollowRedirect bool `json:"FollowRedirect" querystring:"FollowRedirect"`
 }
