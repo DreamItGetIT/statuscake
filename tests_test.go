@@ -96,6 +96,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		TriggerRate:    50,
 		TestTags:       []string{"tag1", "tag2"},
 		StatusCodes:    "500",
+		EnableSSLAlert: false,
 		FollowRedirect: false,
 	}
 
@@ -129,6 +130,7 @@ func TestTest_ToURLValues(t *testing.T) {
 		"UseJar":         {"0"},
 		"PostRaw":        {""},
 		"FinalEndpoint":  {""},
+		"EnableSSLAlert": {"0"},
 		"FollowRedirect": {"0"},
 	}
 
