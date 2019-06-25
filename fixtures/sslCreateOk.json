@@ -2,7 +2,7 @@
   "Success": true,
   "Message": 143616,
   "Input": {
-    "domain": "https://www.fretlink.com",
+    "domain": "https://www.exemple.com",
     "checkrate": "2073600",
     "contact_groups": "",
     "alert_reminder": true,

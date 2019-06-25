@@ -33,10 +33,10 @@ func TestSsl_All(t *testing.T) {
 	flags["is_revoked"] = false
 	flags["has_mixed"] = false
 	expectedTest := &Ssl{
-		Id: "143615",
+		ID: "143615",
 		Checkrate: 2073600,
 		Paused: false,
-		Domain: "https://www.fretlink.com",
+		Domain: "https://www.exemple.com",
 		IssuerCn: "Let's Encrypt Authority X3",
 		CertScore: "95",
 		CipherScore: "100",
@@ -58,11 +58,11 @@ func TestSsl_All(t *testing.T) {
 	}
 	assert.Equal(expectedTest, ssls[0])
 
-	expectedTest.Id="143617"
+	expectedTest.ID="143617"
 	expectedTest.LastUpdatedUtc="2019-06-20 10:23:20"
 	assert.Equal(expectedTest, ssls[2])
 
-	expectedTest.Id="143616"
+	expectedTest.ID="143616"
 	expectedTest.LastUpdatedUtc="2019-06-20 10:23:14"
 	mixed["type"]="img"
 	mixed["src"]="http://example.com/image.gif"
@@ -101,10 +101,10 @@ func TestSsls_Detail_OK(t *testing.T) {
 	flags["is_revoked"] = false
 	flags["has_mixed"] = false
 	expectedTest := &Ssl{
-		Id: "143616",
+		ID: "143616",
 		Checkrate: 2073600,
 		Paused: false,
-		Domain: "https://www.fretlink.com",
+		Domain: "https://www.exemple.com",
 		IssuerCn: "Let's Encrypt Authority X3",
 		CertScore: "95",
 		CipherScore: "100",
@@ -137,7 +137,7 @@ func TestSsls_CreatePartial_OK(t *testing.T) {
 	}
 	tt := newSsls(c)
 	partial := &PartialSsl{
-		Domain: "https://www.fretlink.com",
+		Domain: "https://www.exemple.com",
 		Checkrate: "2073600",
 		ContactGroupsC: "",
 		AlertReminder: true,
@@ -147,8 +147,8 @@ func TestSsls_CreatePartial_OK(t *testing.T) {
 		AlertAt: "7,18,2019",
 	}
 	expectedRes := &PartialSsl {
-		Id: 143616,
-		Domain: "https://www.fretlink.com",
+		ID: 143616,
+		Domain: "https://www.exemple.com",
 		Checkrate: "2073600",
 		ContactGroupsC: "",
 		AlertReminder: true,
@@ -161,7 +161,7 @@ func TestSsls_CreatePartial_OK(t *testing.T) {
 	require.Nil(err)
 	assert.Equal("/SSL/Update", c.sentRequestPath)
 	assert.Equal("PUT", c.sentRequestMethod)
-	assert.Equal(c.sentRequestValues,url.Values(url.Values{"domain":[]string{"https://www.fretlink.com"}, "checkrate":[]string{"2073600"}, "contact_groups":[]string{""}, "alert_at":[]string{"7,18,2019"}, "alert_expiry":[]string{"true"}, "alert_reminder":[]string{"true"}, "alert_broken":[]string{"true"}, "alert_mixed":[]string{"true"}}))
+	assert.Equal(c.sentRequestValues,url.Values(url.Values{"domain":[]string{"https://www.exemple.com"}, "checkrate":[]string{"2073600"}, "contact_groups":[]string{""}, "alert_at":[]string{"7,18,2019"}, "alert_expiry":[]string{"true"}, "alert_reminder":[]string{"true"}, "alert_broken":[]string{"true"}, "alert_mixed":[]string{"true"}}))
 
 	assert.Equal(expectedRes, res)
 }
@@ -175,8 +175,8 @@ func TestSsls_UpdatePartial_OK(t *testing.T) {
 	}
 	tt := newSsls(c)
 	partial := &PartialSsl{
-		Id: 143616,
-		Domain: "https://www.fretlink.com",
+		ID: 143616,
+		Domain: "https://www.exemple.com",
 		Checkrate: "2073600",
 		ContactGroupsC: "",
 		AlertReminder: false,
@@ -186,8 +186,8 @@ func TestSsls_UpdatePartial_OK(t *testing.T) {
 		AlertAt: "7,18,2019",
 	}
 	expectedRes := &PartialSsl {
-		Id: 143616,
-		Domain: "https://www.fretlink.com",
+		ID: 143616,
+		Domain: "https://www.exemple.com",
 		Checkrate: "2073600",
 		ContactGroupsC: "",
 		AlertReminder: false,
@@ -201,7 +201,7 @@ func TestSsls_UpdatePartial_OK(t *testing.T) {
 	assert.Equal(expectedRes, res)
 	assert.Equal("/SSL/Update", c.sentRequestPath)
 	assert.Equal("PUT", c.sentRequestMethod)
-	assert.Equal(c.sentRequestValues,url.Values(url.Values{"id":[]string{"143616"},"domain":[]string{"https://www.fretlink.com"}, "checkrate":[]string{"2073600"}, "contact_groups":[]string{""}, "alert_at":[]string{"7,18,2019"}, "alert_expiry":[]string{"true"}, "alert_reminder":[]string{"false"}, "alert_broken":[]string{"true"}, "alert_mixed":[]string{"true"}}))
+	assert.Equal(c.sentRequestValues,url.Values(url.Values{"id":[]string{"143616"},"domain":[]string{"https://www.exemple.com"}, "checkrate":[]string{"2073600"}, "contact_groups":[]string{""}, "alert_at":[]string{"7,18,2019"}, "alert_expiry":[]string{"true"}, "alert_reminder":[]string{"false"}, "alert_broken":[]string{"true"}, "alert_mixed":[]string{"true"}}))
 }
 
 func TestSsl_complete_OK(t *testing.T) {
@@ -214,8 +214,8 @@ func TestSsl_complete_OK(t *testing.T) {
 	tt := newSsls(c)
 
 	partial := &PartialSsl {
-		Id: 143616,
-		Domain: "https://www.fretlink.com",
+		ID: 143616,
+		Domain: "https://www.exemple.com",
 		Checkrate: "2073600",
 		ContactGroupsC: "12,13,34",
 		AlertReminder: true,
@@ -240,10 +240,10 @@ func TestSsl_complete_OK(t *testing.T) {
 	flags["is_revoked"] = false
 	flags["has_mixed"] = false
 	expectedTest := &Ssl{
-		Id: "143616",
+		ID: "143616",
 		Checkrate: 2073600,
 		Paused: false,
-		Domain: "https://www.fretlink.com",
+		Domain: "https://www.exemple.com",
 		IssuerCn: "Let's Encrypt Authority X3",
 		CertScore: "95",
 		CipherScore: "100",
@@ -286,10 +286,10 @@ func TestSsl_partial_OK(t *testing.T) {
 	flags["is_revoked"] = false
 	flags["has_mixed"] = false
 	full := &Ssl{
-		Id: "143616",
+		ID: "143616",
 		Checkrate: 2073600,
 		Paused: false,
-		Domain: "https://www.fretlink.com",
+		Domain: "https://www.exemple.com",
 		IssuerCn: "Let's Encrypt Authority X3",
 		CertScore: "95",
 		CipherScore: "100",
@@ -310,8 +310,8 @@ func TestSsl_partial_OK(t *testing.T) {
 		LastUpdatedUtc: "2019-06-20 10:23:14",
 	}
 	expectedTest:=&PartialSsl {
-		Id: 143616,
-		Domain: "https://www.fretlink.com",
+		ID: 143616,
+		Domain: "https://www.exemple.com",
 		Checkrate: "2073600",
 		ContactGroupsC: "12,13,34",
 		AlertReminder: true,
