@@ -147,7 +147,8 @@ type ssls struct {
 	client apiClient
 }
 
-func newSsls(c apiClient) Ssls {
+//NewSsls return a new ssls
+func NewSsls(c apiClient) Ssls {
 	return &ssls{
 		client: c,
 	}

@@ -15,7 +15,7 @@ func TestSsl_All(t *testing.T) {
 	c := &fakeAPIClient{
 		fixture: "sslListAllOk.json",
 	}
-	tt := newSsls(c)
+	tt := NewSsls(c)
 	ssls, err := tt.All()
 	require.Nil(err)
 
@@ -79,7 +79,7 @@ func TestSsls_Detail_OK(t *testing.T) {
 	c := &fakeAPIClient{
 		fixture: "sslListAllOk.json",
 	}
-	tt := newSsls(c)
+	tt := NewSsls(c)
 
 	ssl, err := tt.Detail("143616")
 	require.Nil(err)
@@ -135,7 +135,7 @@ func TestSsls_CreatePartial_OK(t *testing.T) {
 	c := &fakeAPIClient{
 		fixture: "sslCreateOk.json",
 	}
-	tt := newSsls(c)
+	tt := NewSsls(c)
 	partial := &PartialSsl{
 		Domain: "https://www.exemple.com",
 		Checkrate: "2073600",
@@ -173,7 +173,7 @@ func TestSsls_UpdatePartial_OK(t *testing.T) {
 	c := &fakeAPIClient{
 		fixture: "sslUpdateOk.json",
 	}
-	tt := newSsls(c)
+	tt := NewSsls(c)
 	partial := &PartialSsl{
 		ID: 143616,
 		Domain: "https://www.exemple.com",
@@ -211,7 +211,7 @@ func TestSsl_complete_OK(t *testing.T) {
 	c := &fakeAPIClient{
 		fixture: "sslListAllOk.json",
 	}
-	tt := newSsls(c)
+	tt := NewSsls(c)
 
 	partial := &PartialSsl {
 		ID: 143616,
@@ -333,7 +333,7 @@ func TestSsls_Delete_OK(t *testing.T) {
 	c := &fakeAPIClient{
 		fixture: "sslDeleteOk.json",
 	}
-	tt := newSsls(c)
+	tt := NewSsls(c)
 
 	err := tt.Delete("143616")
 	require.Nil(err)
