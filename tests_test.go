@@ -140,6 +140,11 @@ func TestTest_ToURLValues(t *testing.T) {
 	delete(expected, "TestID")
 
 	assert.Equal(expected.Encode(), test.ToURLValues().Encode())
+
+	test.StatusCodes = ""
+	delete(expected, "StatusCodes")
+
+	assert.Equal(expected.Encode(), test.ToURLValues().Encode())
 }
 
 func TestTests_All(t *testing.T) {
@@ -179,7 +184,7 @@ func TestTests_All(t *testing.T) {
 		Status:        "Down",
 		Uptime:        0,
 		NodeLocations: []string{"foo"},
-		TestTags:  	   []string{"test1", "test2"},
+		TestTags:      []string{"test1", "test2"},
 	}
 	assert.Equal(expectedTest, tests[1])
 }
@@ -212,7 +217,7 @@ func TestTests_AllWithFilter(t *testing.T) {
 		Status:        "Down",
 		Uptime:        0,
 		NodeLocations: []string{"foo"},
-		TestTags:  	   []string{"test1", "test2"},
+		TestTags:      []string{"test1", "test2"},
 	}
 	assert.Equal(expectedTest, tests[0])
 }
