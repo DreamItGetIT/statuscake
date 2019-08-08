@@ -1,0 +1,37 @@
+[
+  {
+    "GroupName": "group name",
+    "Emails": [],
+    "Mobiles": "",
+    "Boxcar": "",
+    "Pushover": "",
+    "ContactID": 12345,
+    "DesktopAlert": "",
+    "PingURL": ""
+  },
+  {
+    "GroupName": "group name",
+    "Emails": [
+      "aaaaaaa"
+    ],
+    "Mobiles": "",
+    "Boxcar": "",
+    "Pushover": "",
+    "ContactID": 123456,
+    "DesktopAlert": "",
+    "PingURL": "http"
+  },
+  {
+    "GroupName": "group name",
+    "Emails": [
+	"aaaaaaa",
+	"bbbbbbb"
+    ],
+    "Mobiles": "",
+    "Boxcar": "",
+    "Pushover": "",
+    "ContactID": 1234567,
+    "DesktopAlert": "",
+    "PingURL": "http"
+  }
+]
