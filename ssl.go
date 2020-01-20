@@ -50,27 +50,75 @@ type PartialSsl struct {
 }
 
 type createSsl struct {
-	ID             int    `url:"id,omitempty"`
-	Domain         string `url:"domain"         json:"domain"`
-	Checkrate      string `url:"checkrate"      json:"checkrate"`
-	ContactGroupsC string `url:"contact_groups" json:"contact_groups"`
-	AlertAt        string `url:"alert_at"       json:"alert_at"`
-	AlertExpiry    bool   `url:"alert_expiry"   json:"alert_expiry"`
-	AlertReminder  bool   `url:"alert_reminder" json:"alert_reminder"`
-	AlertBroken    bool   `url:"alert_broken"   json:"alert_broken"`
-	AlertMixed     bool   `url:"alert_mixed"    json:"alert_mixed"`
+	ID             int              `url:"id,omitempty"`
+	Domain         string           `url:"domain"         json:"domain"`
+	Checkrate      jsonNumberString `url:"checkrate"      json:"checkrate"`
+	ContactGroupsC string           `url:"contact_groups" json:"contact_groups"`
+	AlertAt        string           `url:"alert_at"       json:"alert_at"`
+	AlertExpiry    bool             `url:"alert_expiry"   json:"alert_expiry"`
+	AlertReminder  bool             `url:"alert_reminder" json:"alert_reminder"`
+	AlertBroken    bool             `url:"alert_broken"   json:"alert_broken"`
+	AlertMixed     bool             `url:"alert_mixed"    json:"alert_mixed"`
+}
+
+func (cs *createSsl) fromPartial(p *PartialSsl) {
+	cs.ID = p.ID
+	cs.Domain = p.Domain
+	cs.Checkrate = jsonNumberString(p.Checkrate)
+	cs.ContactGroupsC = p.ContactGroupsC
+	cs.AlertAt = p.AlertAt
+	cs.AlertExpiry = p.AlertExpiry
+	cs.AlertReminder = p.AlertReminder
+	cs.AlertBroken = p.AlertBroken
+	cs.AlertMixed = p.AlertMixed
+}
+
+func (cs *createSsl) toPartial(p *PartialSsl) {
+	p.ID = cs.ID
+	p.Domain = cs.Domain
+	p.Checkrate = string(cs.Checkrate)
+	p.ContactGroupsC = cs.ContactGroupsC
+	p.AlertAt = cs.AlertAt
+	p.AlertExpiry = cs.AlertExpiry
+	p.AlertReminder = cs.AlertReminder
+	p.AlertBroken = cs.AlertBroken
+	p.AlertMixed = cs.AlertMixed
 }
 
 type updateSsl struct {
-	ID             int    `url:"id"`
-	Domain         string `url:"domain"         json:"domain"`
-	Checkrate      string `url:"checkrate"      json:"checkrate"`
-	ContactGroupsC string `url:"contact_groups" json:"contact_groups"`
-	AlertAt        string `url:"alert_at"       json:"alert_at"`
-	AlertExpiry    bool   `url:"alert_expiry"   json:"alert_expiry"`
-	AlertReminder  bool   `url:"alert_reminder" json:"alert_reminder"`
-	AlertBroken    bool   `url:"alert_broken"   json:"alert_broken"`
-	AlertMixed     bool   `url:"alert_mixed"    json:"alert_mixed"`
+	ID             int              `url:"id"`
+	Domain         string           `url:"domain"         json:"domain"`
+	Checkrate      jsonNumberString `url:"checkrate"      json:"checkrate"`
+	ContactGroupsC string           `url:"contact_groups" json:"contact_groups"`
+	AlertAt        string           `url:"alert_at"       json:"alert_at"`
+	AlertExpiry    bool             `url:"alert_expiry"   json:"alert_expiry"`
+	AlertReminder  bool             `url:"alert_reminder" json:"alert_reminder"`
+	AlertBroken    bool             `url:"alert_broken"   json:"alert_broken"`
+	AlertMixed     bool             `url:"alert_mixed"    json:"alert_mixed"`
+}
+
+func (us *updateSsl) fromPartial(p *PartialSsl) {
+	us.ID = p.ID
+	us.Domain = p.Domain
+	us.Checkrate = jsonNumberString(p.Checkrate)
+	us.ContactGroupsC = p.ContactGroupsC
+	us.AlertAt = p.AlertAt
+	us.AlertExpiry = p.AlertExpiry
+	us.AlertReminder = p.AlertReminder
+	us.AlertBroken = p.AlertBroken
+	us.AlertMixed = p.AlertMixed
+}
+
+func (us *updateSsl) toPartial(p *PartialSsl) {
+	p.ID = us.ID
+	p.Domain = us.Domain
+	p.Checkrate = string(us.Checkrate)
+	p.ContactGroupsC = us.ContactGroupsC
+	p.AlertAt = us.AlertAt
+	p.AlertExpiry = us.AlertExpiry
+	p.AlertReminder = us.AlertReminder
+	p.AlertBroken = us.AlertBroken
+	p.AlertMixed = us.AlertMixed
 }
 
 type sslUpdateResponse struct {
@@ -197,13 +245,16 @@ func (tt *ssls) Update(s *PartialSsl) (*Ssl, error) {
 
 //UpdatePartial update the API with s and create one if s.ID=0 then return the corresponding PartialSsl
 func (tt *ssls) UpdatePartial(s *PartialSsl) (*PartialSsl, error) {
-
 	if (*s).ID == 0 {
 		return tt.CreatePartial(s)
 	}
-	var v url.Values
 
-	v, _ = query.Values(updateSsl(*s))
+	var v url.Values
+	{
+		us := updateSsl{}
+		us.fromPartial(s)
+		v, _ = query.Values(us)
+	}
 
 	rawResponse, err := tt.client.put("/SSL/Update", v)
 	if err != nil {
@@ -247,7 +298,11 @@ func (tt *ssls) Create(s *PartialSsl) (*Ssl, error) {
 func (tt *ssls) CreatePartial(s *PartialSsl) (*PartialSsl, error) {
 	(*s).ID = 0
 	var v url.Values
-	v, _ = query.Values(createSsl(*s))
+	{
+		cs := createSsl{}
+		cs.fromPartial(s)
+		v, _ = query.Values(cs)
+	}
 
 	rawResponse, err := tt.client.put("/SSL/Update", v)
 	if err != nil {
@@ -263,7 +318,7 @@ func (tt *ssls) CreatePartial(s *PartialSsl) (*PartialSsl, error) {
 	if !createResponse.Success {
 		return nil, fmt.Errorf("%s", createResponse.Message.(string))
 	}
-	*s = PartialSsl(createResponse.Input)
+	createResponse.Input.toPartial(s)
 	(*s).ID = int(createResponse.Message.(float64))
 
 	return s, nil
