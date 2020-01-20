@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"strings"
 	"strconv"
-	
+	"strings"
+
 	"github.com/google/go-querystring/query"
 )
 
@@ -73,16 +73,15 @@ type updateSsl struct {
 	AlertMixed     bool   `url:"alert_mixed"    json:"alert_mixed"`
 }
 
-
 type sslUpdateResponse struct {
-	Success bool   `json:"Success"`
+	Success bool        `json:"Success"`
 	Message interface{} `json:"Message"`
 }
 
 type sslCreateResponse struct {
-	Success bool   `json:"Success"`
+	Success bool        `json:"Success"`
 	Message interface{} `json:"Message"`
-	Input createSsl `json:"Input"`
+	Input   createSsl   `json:"Input"`
 }
 
 //Ssls represent the actions done wit the API
@@ -116,31 +115,31 @@ func (tt *ssls) completeSsl(s *PartialSsl) (*Ssl, error) {
 	if err != nil {
 		return nil, err
 	}
-	(*full).ContactGroups = strings.Split((*s).ContactGroupsC,",")
+	(*full).ContactGroups = strings.Split((*s).ContactGroupsC, ",")
 	return full, nil
 }
 
 //Partial return a PartialSsl corresponding to the Ssl
-func Partial(s *Ssl) (*PartialSsl,error) {
-	if s==nil {
-		return nil,fmt.Errorf("s is nil")
+func Partial(s *Ssl) (*PartialSsl, error) {
+	if s == nil {
+		return nil, fmt.Errorf("s is nil")
 	}
-	id,err:=strconv.Atoi(s.ID)
-	if(err!=nil){
-		return nil,err
+	id, err := strconv.Atoi(s.ID)
+	if err != nil {
+		return nil, err
 	}
 	return &PartialSsl{
-		ID: id,
-		Domain: s.Domain,
-		Checkrate: strconv.Itoa(s.Checkrate),
+		ID:             id,
+		Domain:         s.Domain,
+		Checkrate:      strconv.Itoa(s.Checkrate),
 		ContactGroupsC: s.ContactGroupsC,
-		AlertReminder: s.AlertReminder,
-		AlertExpiry: s.AlertExpiry,
-		AlertBroken: s.AlertBroken,
-		AlertMixed: s.AlertMixed,
-		AlertAt: s.AlertAt,
-	},nil
-	
+		AlertReminder:  s.AlertReminder,
+		AlertExpiry:    s.AlertExpiry,
+		AlertBroken:    s.AlertBroken,
+		AlertMixed:     s.AlertMixed,
+		AlertAt:        s.AlertAt,
+	}, nil
+
 }
 
 type ssls struct {
@@ -165,15 +164,15 @@ func (tt *ssls) All() ([]*Ssl, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	for ssl := range getResponse {
 		consolidateSsl(getResponse[ssl])
 	}
-	
+
 	return getResponse, err
 }
 
-//Detail return the ssl corresponding to the id 
+//Detail return the ssl corresponding to the id
 func (tt *ssls) Detail(id string) (*Ssl, error) {
 	responses, err := tt.All()
 	if err != nil {
@@ -190,7 +189,7 @@ func (tt *ssls) Detail(id string) (*Ssl, error) {
 func (tt *ssls) Update(s *PartialSsl) (*Ssl, error) {
 	var err error
 	s, err = tt.UpdatePartial(s)
-	if err!= nil {
+	if err != nil {
 		return nil, err
 	}
 	return tt.completeSsl(s)
@@ -199,28 +198,27 @@ func (tt *ssls) Update(s *PartialSsl) (*Ssl, error) {
 //UpdatePartial update the API with s and create one if s.ID=0 then return the corresponding PartialSsl
 func (tt *ssls) UpdatePartial(s *PartialSsl) (*PartialSsl, error) {
 
-	if((*s).ID == 0){
+	if (*s).ID == 0 {
 		return tt.CreatePartial(s)
 	}
 	var v url.Values
 
 	v, _ = query.Values(updateSsl(*s))
-	
+
 	rawResponse, err := tt.client.put("/SSL/Update", v)
 	if err != nil {
 		return nil, fmt.Errorf("Error creating StatusCake Ssl: %s", err.Error())
 	}
-	
+
 	var updateResponse sslUpdateResponse
 	err = json.NewDecoder(rawResponse.Body).Decode(&updateResponse)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	if !updateResponse.Success {
 		return nil, fmt.Errorf("%s", updateResponse.Message.(string))
 	}
-
 
 	return s, nil
 }
@@ -239,7 +237,7 @@ func (tt *ssls) Delete(id string) error {
 func (tt *ssls) Create(s *PartialSsl) (*Ssl, error) {
 	var err error
 	s, err = tt.CreatePartial(s)
-	if err!= nil {
+	if err != nil {
 		return nil, err
 	}
 	return tt.completeSsl(s)
@@ -247,10 +245,10 @@ func (tt *ssls) Create(s *PartialSsl) (*Ssl, error) {
 
 //CreatePartial create the ssl whith the data in s and return the PartialSsl created
 func (tt *ssls) CreatePartial(s *PartialSsl) (*PartialSsl, error) {
-	(*s).ID=0
+	(*s).ID = 0
 	var v url.Values
 	v, _ = query.Values(createSsl(*s))
-	
+
 	rawResponse, err := tt.client.put("/SSL/Update", v)
 	if err != nil {
 		return nil, fmt.Errorf("Error creating StatusCake Ssl: %s", err.Error())
@@ -267,7 +265,6 @@ func (tt *ssls) CreatePartial(s *PartialSsl) (*PartialSsl, error) {
 	}
 	*s = PartialSsl(createResponse.Input)
 	(*s).ID = int(createResponse.Message.(float64))
-	
-	return s,nil
-}
 
+	return s, nil
+}
