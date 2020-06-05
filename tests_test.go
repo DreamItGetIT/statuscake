@@ -71,6 +71,24 @@ func TestTest_Validate(t *testing.T) {
 
 	err = test.Validate()
 	assert.Nil(err)
+
+
+	test2 := &Test{
+		WebsiteURL: "example.com",
+		WebsiteName: "Example dot com",
+		TestType: "DNS",
+		CheckRate: 300,
+	}
+	err2 := test2.Validate()
+	require.NotNil(err2)
+
+	message2 := err2.Error()
+	assert.Contains(message2, "DNSIP is required")
+
+	test2.DNSIP = "93.184.216.34"
+
+	err2 = test.Validate()
+	assert.Nil(err2)
 }
 
 func TestTest_ToURLValues(t *testing.T) {

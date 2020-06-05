@@ -175,6 +175,10 @@ func (t *Test) Validate() error {
 		e["FinalEndpoint"] = "must be a Valid URL"
 	}
 
+	if t.TestType == "DNS" && t.DNSIP == "" {
+		e["DNSIP"] = "is required"
+	}
+
 	if t.DNSServer != "" && t.TestType != "DNS" {
 		e["DNSServer"] = "must be only used for DNS type tests"
 	}
