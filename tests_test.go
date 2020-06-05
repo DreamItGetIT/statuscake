@@ -32,6 +32,8 @@ func TestTest_Validate(t *testing.T) {
 		CustomHeader: "here be dragons",
 		WebsiteName:  "",
 		WebsiteURL:   "",
+		DNSIP:        "127.0.0.1",
+		DNSServer:    "1.1.1.1",
 	}
 
 	err := test.Validate()
@@ -45,10 +47,12 @@ func TestTest_Validate(t *testing.T) {
 	assert.Contains(message, "CheckRate must be between 0 and 23999")
 	assert.Contains(message, "Public must be 0 or 1")
 	assert.Contains(message, "Virus must be 0 or 1")
-	assert.Contains(message, "TestType must be HTTP, TCP, or PING")
+	assert.Contains(message, "TestType must be HTTP, TCP, DNS or PING")
 	assert.Contains(message, "RealBrowser must be 0 or 1")
 	assert.Contains(message, "TriggerRate must be between 0 and 59")
 	assert.Contains(message, "CustomHeader must be provided as json string")
+	assert.Contains(message, "DNSServer must be only used for DNS type tests")
+	assert.Contains(message, "DNSIP must be only used for DNS type tests")
 
 	test.Timeout = 10
 	test.Confirmation = 2
@@ -62,6 +66,8 @@ func TestTest_Validate(t *testing.T) {
 	test.WebsiteURL = "http://example.com"
 	test.CustomHeader = `{"test": 15}`
 	test.NodeLocations = []string{"foo", "bar"}
+	test.DNSServer = ""
+	test.DNSIP = ""
 
 	err = test.Validate()
 	assert.Nil(err)
@@ -98,6 +104,8 @@ func TestTest_ToURLValues(t *testing.T) {
 		StatusCodes:    "500",
 		EnableSSLAlert: false,
 		FollowRedirect: false,
+		DNSServer:      "127.0.0.1",
+		DNSIP:          "1.1.1.1",
 	}
 
 	expected := url.Values{
@@ -132,6 +140,8 @@ func TestTest_ToURLValues(t *testing.T) {
 		"FinalEndpoint":  {""},
 		"EnableSSLAlert": {"0"},
 		"FollowRedirect": {"0"},
+		"DNSServer":      {"127.0.0.1"},
+		"DNSIP":          {"1.1.1.1"},
 	}
 
 	assert.Equal(expected, test.ToURLValues())
@@ -351,6 +361,65 @@ func TestTests_Detail_OK(t *testing.T) {
 	assert.Equal(test.FindString, "")
 	assert.Equal(test.DoNotFind, false)
 	assert.Equal(test.NodeLocations, []string{"foo", "bar"})
+}
+
+func TestTests_DNS_Detail_OK(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := &fakeAPIClient{
+		fixture: "tests_dns_detail_ok.json",
+	}
+	tt := newTests(c)
+
+	test, err := tt.Detail(1337)
+	require.Nil(err)
+
+	assert.Equal("/Tests/Details", c.sentRequestPath)
+	assert.Equal("GET", c.sentRequestMethod)
+	assert.Equal(url.Values{"TestID": {"1337"}}, c.sentRequestValues)
+
+	assert.Equal(test.TestID, 1337)
+	assert.Equal(test.TestType, "DNS")
+	assert.Equal(test.Paused, false)
+	assert.Equal(test.WebsiteName, "A DNS test")
+	assert.Equal(test.Status, "Up")
+	assert.Equal(test.Uptime, 100.0)
+	assert.Equal(test.CheckRate, 300)
+	assert.Equal(test.DNSServer, "1.1.1.1")
+	assert.Equal(test.DNSIP, "93.184.216.34")
+}
+
+func TestTests_DNS_Create_OK(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+
+	c := &fakeAPIClient{
+		fixture: "tests_dns_create_ok.json",
+	}
+	tt := newTests(c)
+
+	test1 := &Test{
+		WebsiteName: "Example dot com",
+		WebsiteURL:  "http://example.com",
+		CheckRate:   300,
+		DNSServer:   "1.1.1.1",
+		DNSIP:       "93.184.216.34",
+	}
+
+	test2, err := tt.Update(test1)
+	require.Nil(err)
+
+	assert.Equal("/Tests/Update", c.sentRequestPath)
+	assert.Equal("PUT", c.sentRequestMethod)
+	assert.Equal(test1.WebsiteName, test2.WebsiteName)
+	assert.Equal(test1.WebsiteURL, test2.WebsiteURL)
+	assert.Equal(test1.DNSIP, test2.DNSIP)
+	assert.Equal(test1.DNSServer, test2.DNSServer)
+	assert.NotNil(c.sentRequestValues)
+	assert.NotNil(test2)
+
+	assert.Equal(1337, test2.TestID)
 }
 
 type fakeAPIClient struct {
