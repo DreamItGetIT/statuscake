@@ -1,0 +1,16 @@
+{
+  "Success": true,
+  "Data": {
+    "WebsiteName": "Example dot com",
+    "WebsiteURL": "example.com",
+    "CheckRate": 200,
+    "TestType": "DNS",
+    "DNSIP": "93.184.216.34",
+    "DNSServer": "1.1.1.1",
+    "Client": "1234",
+    "Status": "Up",
+    "LastTest": "2020-06-05 11:23:22"
+  },
+  "Message": "Test Inserted",
+  "InsertID": 1337
+}

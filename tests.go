@@ -115,6 +115,12 @@ type Test struct {
 
 	// Use to specify whether redirects should be followed
 	FollowRedirect bool `json:"FollowRedirect" querystring:"FollowRedirect"`
+
+	// DNS Tests only. Hostname or IP of DNS server to use.
+	DNSServer string `json:"DNSServer" querystring:"DNSServer"`
+
+	// DNS Tests only. IP to compare against WebsiteURL value.
+	DNSIP string `json:"DNSIP" querystring:"DNSIP"`
 }
 
 // Validate checks if the Test is valid. If it's invalid, it returns a ValidationError with all invalid fields. It returns nil otherwise.
@@ -149,8 +155,8 @@ func (t *Test) Validate() error {
 		e["Virus"] = "must be 0 or 1"
 	}
 
-	if t.TestType != "HTTP" && t.TestType != "TCP" && t.TestType != "PING" {
-		e["TestType"] = "must be HTTP, TCP, or PING"
+	if t.TestType != "HTTP" && t.TestType != "TCP" && t.TestType != "PING" && t.TestType != "DNS" {
+		e["TestType"] = "must be HTTP, TCP, DNS or PING"
 	}
 
 	if t.RealBrowser < 0 || t.RealBrowser > 1 {
@@ -167,6 +173,18 @@ func (t *Test) Validate() error {
 
 	if t.FinalEndpoint != "" && t.TestType != "HTTP" {
 		e["FinalEndpoint"] = "must be a Valid URL"
+	}
+
+	if t.TestType == "DNS" && t.DNSIP == "" {
+		e["DNSIP"] = "is required"
+	}
+
+	if t.DNSServer != "" && t.TestType != "DNS" {
+		e["DNSServer"] = "must be only used for DNS type tests"
+	}
+
+	if t.DNSIP != "" && t.TestType != "DNS" {
+		e["DNSIP"] = "must be only used for DNS type tests"
 	}
 
 	if t.CustomHeader != "" {
