@@ -35,6 +35,7 @@
   "DNSServer": "1.1.1.1",
   "CustomHeader": "",
   "PostRaw": "",
+  "PostBody": "",
   "UseJar": 0,
   "StatusCodes": []
 }

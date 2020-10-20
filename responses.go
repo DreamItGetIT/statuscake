@@ -60,6 +60,7 @@ type detailResponse struct {
 	TriggerRate      int                          `json:"TriggerRate,string"`
 	UseJar           int                          `json:"UseJar"`
 	PostRaw          string                       `json:"PostRaw"`
+	PostBody         string                       `json:"PostBody"`
 	FinalEndpoint    string                       `json:"FinalEndpoint"`
 	EnableSSLWarning bool                         `json:"EnableSSLWarning"`
 	FollowRedirect   bool                         `json:"FollowRedirect"`
@@ -99,6 +100,7 @@ func (d *detailResponse) test() *Test {
 		TriggerRate:    d.TriggerRate,
 		UseJar:         d.UseJar,
 		PostRaw:        d.PostRaw,
+		PostBody:       d.PostBody,
 		FinalEndpoint:  d.FinalEndpoint,
 		DNSServer:      d.DNSServer,
 		DNSIP:          d.DNSIP,

@@ -107,6 +107,9 @@ type Test struct {
 	// Raw POST data seperated by an ampersand
 	PostRaw string `json:"PostRaw" querystring:"PostRaw"`
 
+	// POST Body data, json
+	PostBody string `json:"PostBody" querystring:"PostBody"`
+
 	// Use to specify the expected Final URL in the testing process
 	FinalEndpoint string `json:"FinalEndpoint" querystring:"FinalEndpoint"`
 
@@ -168,7 +171,11 @@ func (t *Test) Validate() error {
 	}
 
 	if t.PostRaw != "" && t.TestType != "HTTP" {
-		e["PostRaw"] = "must be HTTP to submit a POST request"
+		e["PostRaw"] = "must be HTTP to submit a POST request with PostRaw"
+	}
+
+	if t.PostBody != "" && t.TestType != "HTTP" {
+		e["PostBody"] = "must be HTTP to submit a POST request with PostBody"
 	}
 
 	if t.FinalEndpoint != "" && t.TestType != "HTTP" {

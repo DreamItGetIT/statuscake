@@ -33,6 +33,7 @@
   "DownTimes": "0",
   "UseJar": 0,
   "PostRaw": "",
+  "PostBody": "",
   "FinalEndpoint": "",
   "EnableSSLWarning": false,
   "FollowRedirect": false
