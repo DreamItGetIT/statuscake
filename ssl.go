@@ -132,7 +132,7 @@ type sslCreateResponse struct {
 	Input   createSsl   `json:"Input"`
 }
 
-//Ssls represent the actions done wit the API
+//Ssls represent the actions done with the API
 type Ssls interface {
 	All() ([]*Ssl, error)
 	completeSsl(*PartialSsl) (*Ssl, error)
@@ -284,7 +284,7 @@ func (tt *ssls) Delete(id string) error {
 	return nil
 }
 
-//Create create the ssl whith the data in s and return the Ssl created
+//Create create the ssl with the data in s and return the Ssl created
 func (tt *ssls) Create(s *PartialSsl) (*Ssl, error) {
 	var err error
 	s, err = tt.CreatePartial(s)
@@ -294,7 +294,7 @@ func (tt *ssls) Create(s *PartialSsl) (*Ssl, error) {
 	return tt.completeSsl(s)
 }
 
-//CreatePartial create the ssl whith the data in s and return the PartialSsl created
+//CreatePartial create the ssl with the data in s and return the PartialSsl created
 func (tt *ssls) CreatePartial(s *PartialSsl) (*PartialSsl, error) {
 	(*s).ID = 0
 	var v url.Values

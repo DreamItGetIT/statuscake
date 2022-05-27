@@ -45,7 +45,7 @@ type Test struct {
 	// 1 Day Uptime
 	Uptime float64 `json:"Uptime"`
 
-	// Any test locations seperated by a comma (using the Node Location IDs)
+	// Any test locations separated by a comma (using the Node Location IDs)
 	NodeLocations []string `json:"NodeLocations" querystring:"NodeLocations"`
 
 	// Timeout in an int form representing seconds.
@@ -95,16 +95,16 @@ type Test struct {
 	// How many minutes to wait before sending an alert
 	TriggerRate int `json:"TriggerRate" querystring:"TriggerRate"`
 
-	// Tags should be seperated by a comma - no spacing between tags (this,is,a set,of,tags)
+	// Tags should be separated by a comma - no spacing between tags (this,is,a set,of,tags)
 	TestTags []string `json:"TestTags" querystring:"TestTags"`
 
-	// Comma Seperated List of StatusCodes to Trigger Error on (on Update will replace, so send full list each time)
+	// Comma Separated List of StatusCodes to Trigger Error on (on Update will replace, so send full list each time)
 	StatusCodes string `json:"StatusCodes" querystring:"StatusCodes" querystringoptions:"omitempty"`
 
 	// Set to 1 to enable the Cookie Jar. Required for some redirects.
 	UseJar int `json:"UseJar" querystring:"UseJar"`
 
-	// Raw POST data seperated by an ampersand
+	// Raw POST data separated by an ampersand
 	PostRaw string `json:"PostRaw" querystring:"PostRaw"`
 
 	// POST Body data, json

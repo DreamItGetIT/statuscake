@@ -480,7 +480,7 @@ func (c *fakeAPIClient) all(method string, path string, v url.Values) (*http.Res
 		requestedTags := strings.Split(c.sentRequestValues.Get("tags"), ",")
 
 		for _, storedResponse := range storedResponses {
-			if len(requestedTags) > len(storedResponse.TestTags) { // if we are requesting more tags than whats stored then there are no matches
+			if len(requestedTags) > len(storedResponse.TestTags) { // if we are requesting more tags than what's stored then there are no matches
 				continue
 			}
 
