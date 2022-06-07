@@ -121,7 +121,7 @@ func (tt *contactGroups) Delete(id int) error {
 	return err
 }
 
-//CreatePartial create the ContactGroup whith the data in cg and return the ContactGroup created
+//CreatePartial create the ContactGroup with the data in cg and return the ContactGroup created
 func (tt *contactGroups) Create(cg *ContactGroup) (*ContactGroup, error) {
 	cg.ContactID = 0
 	cg.EmailsPut = strings.Join(cg.Emails, ",")
